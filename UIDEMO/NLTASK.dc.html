@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap');
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{margin:0;background:linear-gradient(160deg,#0B1220 0%,#15203A 45%,#1D2C4D 100%);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+::-webkit-scrollbar{display:none;}
+button{font-family:inherit;}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes modalPop{from{opacity:0;transform:translate(-50%,-50%) scale(.92)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes toastDown{from{opacity:0;transform:translate(-50%,-14px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes checkPop{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:36px 16px;">
+<div style="width:390px;height:844px;background:#F5F7FB;border-radius:44px;overflow:hidden;position:relative;box-shadow:0 40px 90px -20px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.08);">
+
+<sc-if value="{{ isTodayTab }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;">
+  <div style="flex:none;padding:26px 20px 20px;background:linear-gradient(135deg,#152A63 0%,#2563EB 100%);border-radius:0 0 28px 28px;box-shadow:0 14px 28px -14px rgba(21,42,99,.5);">
+    <div style="font:600 13px/1.3 sans-serif;color:rgba(255,255,255,.72);letter-spacing:.02em;">{{ weekdayLabel }}</div>
+    <div style="font:700 25px/1.25 'Space Grotesk',sans-serif;color:#fff;margin-top:3px;margin-bottom:16px;">{{ dateLabel }}</div>
+    <div style="padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font:600 12.5px/1.3 sans-serif;color:rgba(255,255,255,.78);">Tiến độ hôm nay</div>
+        <div style="font:700 19px/1.3 'Space Grotesk',sans-serif;color:#fff;margin-top:3px;">{{ todayCompletedCount }}/{{ todayTotalCount }} công việc</div>
+      </div>
+      <div style="width:50px;height:50px;border-radius:50%;background:{{ todayProgressGradient }};display:flex;align-items:center;justify-content:center;flex:none;">
+        <div style="width:39px;height:39px;border-radius:50%;background:#152A63;display:flex;align-items:center;justify-content:center;font:700 12.5px 'Space Grotesk',sans-serif;color:#fff;">{{ todayProgressPct }}%</div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;padding:16px 20px 14px;overflow-x:auto;flex:none;">
+    <sc-for list="{{ filterChips }}" as="chip" hint-placeholder-count="5">
+      <button style="{{ chip.style }}" onClick="{{ chip.onClick }}">{{ chip.label }}</button>
+    </sc-for>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:0 20px 110px;">
+    <sc-if value="{{ hasOverdue }}">
+      <div style="font:700 13px sans-serif;color:#DC2626;margin:6px 0 8px;">Quá hạn</div>
+      <sc-for list="{{ overdueItems }}" as="item" hint-placeholder-count="1">
+        <div style="background:#fff;border:1px solid #FECACA;border-radius:16px;padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 10px 22px -16px rgba(220,38,38,.22);" onClick="{{ item.openDetail }}">
+          <button style="{{ item.checkboxStyle }}" onClick="{{ item.toggleClick }}"><sc-if value="{{ item.completed }}"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if></button>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <span style="width:6px;height:6px;border-radius:50%;background:{{ item.categoryColor }};flex:none;"></span>
+              <span style="font:600 11px sans-serif;color:{{ item.categoryColor }};">{{ item.categoryLabel }}</span>
+            </div>
+            <div style="font:600 16px/1.3 sans-serif;color:#0F172A;">{{ item.title }}</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap;">
+              <span style="display:flex;align-items:center;gap:4px;font:500 12.5px sans-serif;color:#64748B;"><svg viewBox="0 0 24 24" width="13" height="13"><circle cx="12" cy="12" r="9" stroke="#94A3B8" stroke-width="2" fill="none"/><path d="M12 7v5l3 2" stroke="#94A3B8" stroke-width="2" fill="none" stroke-linecap="round"/></svg>{{ item.timeLabel }}</span>
+              <span style="font:600 11px sans-serif;color:{{ item.priorityColor }};background:{{ item.priorityBg }};padding:2px 8px;border-radius:6px;">{{ item.priorityLabel }}</span>
+            </div>
+            <div style="margin-top:6px;font:600 12px sans-serif;color:#DC2626;">{{ item.relativeLabel }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </sc-if>
+    <div style="font:700 13px sans-serif;color:#0F172A;margin:6px 0 8px;">Hôm nay</div>
+    <sc-if value="{{ hasToday }}" hint-placeholder-val="{{ true }}">
+      <sc-for list="{{ todayItems }}" as="item" hint-placeholder-count="2">
+        <div style="background:#fff;border:1px solid rgba(15,23,42,.04);border-radius:16px;padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 1px 2px rgba(15,23,42,.03),0 10px 22px -16px rgba(15,23,42,.14);" onClick="{{ item.openDetail }}">
+          <button style="{{ item.checkboxStyle }}" onClick="{{ item.toggleClick }}"><sc-if value="{{ item.completed }}"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if></button>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <span style="width:6px;height:6px;border-radius:50%;background:{{ item.categoryColor }};flex:none;"></span>
+              <span style="font:600 11px sans-serif;color:{{ item.categoryColor }};">{{ item.categoryLabel }}</span>
+              <sc-if value="{{ item.isRepeat }}"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M4 8h11a3 3 0 0 1 3 3v1M20 16H9a3 3 0 0 1-3-3v-1" stroke="#94A3B8" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M15 5l3 3-3 3M9 19l-3-3 3-3" stroke="#94A3B8" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+            </div>
+            <div style="font:600 16px/1.3 sans-serif;color:{{ item.titleColor }};text-decoration:{{ item.titleDecoration }};">{{ item.title }}</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap;">
+              <span style="display:flex;align-items:center;gap:4px;font:500 12.5px sans-serif;color:#64748B;"><svg viewBox="0 0 24 24" width="13" height="13"><circle cx="12" cy="12" r="9" stroke="#94A3B8" stroke-width="2" fill="none"/><path d="M12 7v5l3 2" stroke="#94A3B8" stroke-width="2" fill="none" stroke-linecap="round"/></svg>{{ item.timeLabel }}</span>
+              <sc-if value="{{ item.hasLocation }}"><span style="display:flex;align-items:center;gap:4px;font:500 12.5px sans-serif;color:#64748B;"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z" stroke="#94A3B8" stroke-width="2" fill="none"/><circle cx="12" cy="9.5" r="2.2" stroke="#94A3B8" stroke-width="2" fill="none"/></svg>{{ item.location }}</span></sc-if>
+              <span style="font:600 11px sans-serif;color:{{ item.priorityColor }};background:{{ item.priorityBg }};padding:2px 8px;border-radius:6px;">{{ item.priorityLabel }}</span>
+            </div>
+            <div style="margin-top:6px;font:600 12px sans-serif;color:{{ item.relativeColor }};">{{ item.relativeLabel }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </sc-if>
+    <sc-if value="{{ hasNoToday }}">
+      <div style="padding:20px 4px;font:500 13.5px sans-serif;color:#94A3B8;">Không còn việc nào cho hôm nay.</div>
+    </sc-if>
+    <sc-if value="{{ hasUpcoming }}">
+      <div style="font:700 13px sans-serif;color:#0F172A;margin:14px 0 8px;">Sắp tới</div>
+      <sc-for list="{{ upcomingItems }}" as="item" hint-placeholder-count="2">
+        <div style="background:#fff;border:1px solid rgba(15,23,42,.04);border-radius:16px;padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 1px 2px rgba(15,23,42,.03),0 10px 22px -16px rgba(15,23,42,.14);" onClick="{{ item.openDetail }}">
+          <button style="{{ item.checkboxStyle }}" onClick="{{ item.toggleClick }}"></button>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <span style="width:6px;height:6px;border-radius:50%;background:{{ item.categoryColor }};flex:none;"></span>
+              <span style="font:600 11px sans-serif;color:{{ item.categoryColor }};">{{ item.categoryLabel }}</span>
+              <span style="font:600 11px sans-serif;color:#94A3B8;">· {{ item.dateShort }}</span>
+            </div>
+            <div style="font:600 16px/1.3 sans-serif;color:#0F172A;">{{ item.title }}</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap;">
+              <span style="display:flex;align-items:center;gap:4px;font:500 12.5px sans-serif;color:#64748B;"><svg viewBox="0 0 24 24" width="13" height="13"><circle cx="12" cy="12" r="9" stroke="#94A3B8" stroke-width="2" fill="none"/><path d="M12 7v5l3 2" stroke="#94A3B8" stroke-width="2" fill="none" stroke-linecap="round"/></svg>{{ item.timeLabel }}</span>
+              <span style="font:600 11px sans-serif;color:{{ item.priorityColor }};background:{{ item.priorityBg }};padding:2px 8px;border-radius:6px;">{{ item.priorityLabel }}</span>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isHistoryTab }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;">
+  <div style="flex:none;padding:26px 20px 24px;background:linear-gradient(135deg,#152A63 0%,#2563EB 100%);border-radius:0 0 28px 28px;box-shadow:0 14px 28px -14px rgba(21,42,99,.5);">
+    <div style="font:700 22px/1.25 'Space Grotesk',sans-serif;color:#fff;">Lịch sử</div>
+    <div style="font:500 13px sans-serif;color:rgba(255,255,255,.75);margin-top:2px;">Tổng {{ allCompletedCount }} công việc đã hoàn thành</div>
+  </div>
+  <div style="padding:16px 20px 12px;flex:none;">
+    <div style="display:flex;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:10px 14px;box-shadow:0 1px 2px rgba(15,23,42,.04),0 10px 20px -16px rgba(15,23,42,.2);">
+      <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="7" stroke="#94A3B8" stroke-width="2" fill="none"/><path d="M21 21l-4.3-4.3" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"/></svg>
+      <input value="{{ historySearch }}" onInput="{{ onHistorySearch }}" placeholder="Tìm trong lịch sử..." style="border:none;background:transparent;outline:none;font:500 13.5px sans-serif;color:#0F172A;flex:1;"></input>
+    </div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:8px 20px 110px;">
+    <sc-if value="{{ hasHistory }}" hint-placeholder-val="{{ true }}">
+      <sc-for list="{{ historyGroups }}" as="group" hint-placeholder-count="2">
+        <div style="font:700 13px sans-serif;color:#94A3B8;margin:14px 0 8px;">{{ group.label }}</div>
+        <sc-for list="{{ group.items }}" as="item" hint-placeholder-count="2">
+          <div style="background:#fff;border:1px solid rgba(15,23,42,.04);border-radius:16px;padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 1px 2px rgba(15,23,42,.03),0 10px 22px -16px rgba(15,23,42,.14);" onClick="{{ item.openDetail }}">
+            <button style="{{ item.checkboxStyle }}" onClick="{{ item.toggleClick }}"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                <span style="width:6px;height:6px;border-radius:50%;background:{{ item.categoryColor }};flex:none;"></span>
+                <span style="font:600 11px sans-serif;color:{{ item.categoryColor }};">{{ item.categoryLabel }}</span>
+              </div>
+              <div style="font:600 16px/1.3 sans-serif;color:#94A3B8;text-decoration:line-through;">{{ item.title }}</div>
+              <div style="margin-top:6px;font:500 12.5px sans-serif;color:#64748B;">Hoàn thành lúc {{ item.completedTimeLabel }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </sc-for>
+    </sc-if>
+    <sc-if value="{{ hasNoHistory }}">
+      <div style="padding:40px 4px;text-align:center;font:500 13.5px sans-serif;color:#94A3B8;">Chưa có lịch sử phù hợp.</div>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isStatsTab }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;">
+  <div style="flex:none;padding:26px 20px 24px;background:linear-gradient(135deg,#152A63 0%,#2563EB 100%);border-radius:0 0 28px 28px;box-shadow:0 14px 28px -14px rgba(21,42,99,.5);">
+    <div style="font:700 22px/1.25 'Space Grotesk',sans-serif;color:#fff;">Thống kê</div>
+    <div style="font:500 13px sans-serif;color:rgba(255,255,255,.75);margin-top:2px;">Tuần này</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:18px 20px 110px;">
+    <div style="display:flex;gap:12px;margin-bottom:16px;">
+      <div style="flex:1;background:#fff;border:none;border-radius:18px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 1px 2px rgba(15,23,42,.03),0 12px 24px -16px rgba(15,23,42,.16);">
+        <div style="width:74px;height:74px;border-radius:50%;background:{{ donutStyle }};display:flex;align-items:center;justify-content:center;">
+          <div style="width:56px;height:56px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font:700 15px 'Space Grotesk',sans-serif;color:#0F172A;">{{ completionRateWeek }}%</div>
+        </div>
+        <div style="font:600 12px sans-serif;color:#64748B;text-align:center;">Tỉ lệ hoàn thành</div>
+      </div>
+      <div style="flex:1;background:#fff;border:none;border-radius:18px;padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;box-shadow:0 1px 2px rgba(15,23,42,.03),0 12px 24px -16px rgba(15,23,42,.16);">
+        <svg viewBox="0 0 24 24" width="30" height="30"><path d="M12 2c1 3-3 4-3 8a4 4 0 0 0 8 0c0-1.5-1-2.5-1-2.5s.5 2-1 2.5c1-2 -0.5-4.5 -2-6 0 2-2 3-2 5a2 2 0 0 0 4 0" stroke="#D97706" stroke-width="1.6" fill="#FEF3C7" stroke-linejoin="round"/></svg>
+        <div style="font:700 20px 'Space Grotesk',sans-serif;color:#0F172A;">{{ streakDays }} ngày</div>
+        <div style="font:600 12px sans-serif;color:#64748B;">Chuỗi liên tiếp</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:none;border-radius:18px;padding:18px 16px;margin-bottom:16px;box-shadow:0 1px 2px rgba(15,23,42,.03),0 12px 24px -16px rgba(15,23,42,.16);">
+      <div style="font:700 14px sans-serif;color:#0F172A;margin-bottom:14px;">Công việc hoàn thành theo ngày</div>
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;height:100px;gap:8px;">
+        <sc-for list="{{ weekBars }}" as="bar" hint-placeholder-count="7">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;height:100%;justify-content:flex-end;">
+            <div style="font:600 11px sans-serif;color:#94A3B8;">{{ bar.count }}</div>
+            <div style="width:18px;border-radius:6px;background:{{ bar.color }};height:{{ bar.heightPx }};"></div>
+            <div style="font:600 11px sans-serif;color:{{ bar.labelColor }};">{{ bar.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="background:#fff;border:none;border-radius:18px;padding:18px 16px;box-shadow:0 1px 2px rgba(15,23,42,.03),0 12px 24px -16px rgba(15,23,42,.16);">
+      <div style="font:700 14px sans-serif;color:#0F172A;margin-bottom:12px;">Theo danh mục</div>
+      <sc-for list="{{ categoryBreakdown }}" as="cat" hint-placeholder-count="3">
+        <div style="margin-bottom:12px;">
+          <div style="display:flex;justify-content:space-between;font:600 12.5px sans-serif;color:#334155;margin-bottom:6px;"><span>{{ cat.label }}</span><span>{{ cat.count }}</span></div>
+          <div style="height:8px;border-radius:5px;background:#F1F5F9;overflow:hidden;"><div style="height:100%;border-radius:5px;background:{{ cat.color }};width:{{ cat.pct }}%;"></div></div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isSettingsTab }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;">
+  <div style="flex:none;padding:26px 20px 24px;background:linear-gradient(135deg,#152A63 0%,#2563EB 100%);border-radius:0 0 28px 28px;box-shadow:0 14px 28px -14px rgba(21,42,99,.5);">
+    <div style="font:700 22px/1.25 'Space Grotesk',sans-serif;color:#fff;">Cài đặt</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:18px 20px 110px;">
+    <div style="font:700 12.5px sans-serif;color:#94A3B8;margin:10px 0 8px;text-transform:uppercase;letter-spacing:.04em;">Thông báo &amp; nhắc nhở</div>
+    <div style="background:#fff;border:none;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(15,23,42,.03),0 12px 24px -16px rgba(15,23,42,.16);">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #F1F5F9;">
+        <div><div style="font:600 14.5px sans-serif;color:#0F172A;">Thông báo đẩy</div><div style="font:500 12px sans-serif;color:#94A3B8;margin-top:2px;">Nhắc khi tới giờ công việc</div></div>
+        <button style="{{ switches.push.trackStyle }}" onClick="{{ switches.push.onClick }}"><div style="{{ switches.push.knobStyle }}"></div></button>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #F1F5F9;">
+        <div><div style="font:600 14.5px sans-serif;color:#0F172A;">Âm thanh</div></div>
+        <button style="{{ switches.sound.trackStyle }}" onClick="{{ switches.sound.onClick }}"><div style="{{ switches.sound.knobStyle }}"></div></button>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;">
+        <div><div style="font:600 14.5px sans-serif;color:#0F172A;">Rung</div></div>
+        <button style="{{ switches.vibrate.trackStyle }}" onClick="{{ switches.vibrate.onClick }}"><div style="{{ switches.vibrate.knobStyle }}"></div></button>
+      </div>
+    </div>
+    <div style="font:700 12.5px sans-serif;color:#94A3B8;margin:18px 0 8px;text-transform:uppercase;letter-spacing:.04em;">Nhắc trước khi tới giờ</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <sc-for list="{{ remindBeforeOptions }}" as="opt" hint-placeholder-count="4">
+        <button style="{{ opt.style }}" onClick="{{ opt.onClick }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+    <div style="font:700 12.5px sans-serif;color:#94A3B8;margin:18px 0 8px;text-transform:uppercase;letter-spacing:.04em;">Nhắc lại (báo lại sau)</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <sc-for list="{{ snoozeOptions }}" as="opt" hint-placeholder-count="4">
+        <button style="{{ opt.style }}" onClick="{{ opt.onClick }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+    <div style="font:700 12.5px sans-serif;color:#94A3B8;margin:18px 0 8px;text-transform:uppercase;letter-spacing:.04em;">Giờ im lặng</div>
+    <div style="background:#fff;border:none;border-radius:16px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 2px rgba(15,23,42,.03),0 12px 24px -16px rgba(15,23,42,.16);">
+      <div style="font:600 14px sans-serif;color:#334155;">Không nhắc từ</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button style="padding:8px 14px;border-radius:10px;background:#F1F5F9;border:none;font:700 13.5px 'Space Grotesk',sans-serif;color:#0F172A;" onClick="{{ openQuietStart }}">{{ settings.quietStart }}</button>
+        <span style="color:#94A3B8;font:600 13px sans-serif;">đến</span>
+        <button style="padding:8px 14px;border-radius:10px;background:#F1F5F9;border:none;font:700 13.5px 'Space Grotesk',sans-serif;color:#0F172A;" onClick="{{ openQuietEnd }}">{{ settings.quietEnd }}</button>
+      </div>
+    </div>
+    <div style="font:700 12.5px sans-serif;color:#94A3B8;margin:18px 0 8px;text-transform:uppercase;letter-spacing:.04em;">Khác</div>
+    <div style="background:#fff;border:none;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(15,23,42,.03),0 12px 24px -16px rgba(15,23,42,.16);">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #F1F5F9;"><div style="font:600 14.5px sans-serif;color:#0F172A;">Ngôn ngữ</div><div style="font:600 13.5px sans-serif;color:#94A3B8;">Tiếng Việt</div></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;"><div style="font:600 14.5px sans-serif;color:#0F172A;">Giao diện</div><div style="font:600 13.5px sans-serif;color:#94A3B8;">Sáng</div></div>
+    </div>
+    <div style="text-align:center;font:500 12px sans-serif;color:#CBD5E1;margin-top:22px;">NLTASK · Phiên bản 1.0.0</div>
+  </div>
+</div>
+</sc-if>
+
+<div style="position:absolute;left:0;right:0;bottom:0;height:82px;background:#fff;border-top:1px solid #F1F3F8;box-shadow:0 -10px 24px -18px rgba(15,23,42,.2);display:flex;align-items:center;padding-bottom:16px;z-index:10;">
+  <button style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;padding:6px 0;" onClick="{{ navToday.onClick }}">
+    <svg viewBox="0 0 24 24" width="22" height="22"><rect x="4" y="5" width="16" height="15" rx="3" stroke="{{ navToday.color }}" stroke-width="2" fill="none"></rect><path d="M8 10h8M8 14h5" stroke="{{ navToday.color }}" stroke-width="2" stroke-linecap="round"></path></svg>
+    <div style="font:600 11px sans-serif;color:{{ navToday.color }};">Hôm nay</div>
+  </button>
+  <button style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;padding:6px 0;" onClick="{{ navHistory.onClick }}">
+    <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="12" r="8.5" stroke="{{ navHistory.color }}" stroke-width="2" fill="none"></circle><path d="M12 8v4l3 2" stroke="{{ navHistory.color }}" stroke-width="2" fill="none" stroke-linecap="round"></path></svg>
+    <div style="font:600 11px sans-serif;color:{{ navHistory.color }};">Lịch sử</div>
+  </button>
+  <button style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;padding:6px 0;" onClick="{{ navStats.onClick }}">
+    <svg viewBox="0 0 24 24" width="22" height="22"><rect x="5" y="12" width="3.5" height="7" rx="1" fill="{{ navStats.color }}"></rect><rect x="10.5" y="8" width="3.5" height="11" rx="1" fill="{{ navStats.color }}"></rect><rect x="16" y="4" width="3.5" height="15" rx="1" fill="{{ navStats.color }}"></rect></svg>
+    <div style="font:600 11px sans-serif;color:{{ navStats.color }};">Thống kê</div>
+  </button>
+  <button style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;padding:6px 0;" onClick="{{ navSettings.onClick }}">
+    <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="7" cy="7" r="2" stroke="{{ navSettings.color }}" stroke-width="2" fill="none"></circle><path d="M4 7h6M13 7h7" stroke="{{ navSettings.color }}" stroke-width="2" stroke-linecap="round"></path><circle cx="17" cy="15" r="2" stroke="{{ navSettings.color }}" stroke-width="2" fill="none"></circle><path d="M4 15h10M20 15h0" stroke="{{ navSettings.color }}" stroke-width="2" stroke-linecap="round"></path></svg>
+    <div style="font:600 11px sans-serif;color:{{ navSettings.color }};">Cài đặt</div>
+  </button>
+</div>
+
+<sc-if value="{{ showFab }}" hint-placeholder-val="{{ true }}">
+  <button style="position:absolute;right:20px;bottom:98px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#3B7CF6 0%,#152A63 100%);border:none;box-shadow:0 14px 26px -8px rgba(21,42,99,.55);display:flex;align-items:center;justify-content:center;z-index:15;" onClick="{{ openAdd }}">
+    <svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>
+  </button>
+</sc-if>
+
+<sc-if value="{{ showAddSheet }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:#F8FAFC;z-index:30;display:flex;flex-direction:column;animation:sheetUp .25s ease-out;">
+  <div style="flex:none;display:flex;align-items:center;justify-content:space-between;padding:22px 18px 14px;border-bottom:1px solid #F1F5F9;">
+    <button style="background:none;border:none;font:600 14.5px sans-serif;color:#64748B;padding:6px;" onClick="{{ closeAddSheet }}">Hủy</button>
+    <div style="font:700 15.5px 'Space Grotesk',sans-serif;color:#0F172A;">{{ sheetTitle }}</div>
+    <button style="background:none;border:none;font:700 14.5px sans-serif;color:#2563EB;padding:6px;" onClick="{{ saveTask }}">Lưu</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:18px 20px 40px;">
+    <input value="{{ form.title }}" onInput="{{ onTitleInput }}" placeholder="Tên công việc" style="{{ titleInputStyle }}"></input>
+    <sc-if value="{{ showTitleHint }}"><div style="font:600 12px sans-serif;color:#DC2626;margin:-6px 0 12px;">Vui lòng nhập tên công việc</div></sc-if>
+    <textarea value="{{ form.desc }}" onInput="{{ onDescInput }}" placeholder="Thêm mô tả (không bắt buộc)" style="width:100%;min-height:64px;border:1px solid #E2E8F0;border-radius:14px;padding:12px 14px;font:500 14px sans-serif;color:#0F172A;outline:none;resize:none;margin-bottom:14px;"></textarea>
+    <div style="display:flex;gap:10px;margin-bottom:6px;">
+      <button style="flex:1;display:flex;align-items:center;gap:8px;padding:13px 14px;border-radius:14px;background:#F8FAFC;border:1px solid {{ dateFieldBorder }};" onClick="{{ openDatePicker }}">
+        <svg viewBox="0 0 24 24" width="17" height="17"><rect x="4" y="5" width="16" height="15" rx="3" stroke="#2563EB" stroke-width="2" fill="none"/><path d="M4 10h16M8 3v4M16 3v4" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/></svg>
+        <span style="font:600 13.5px sans-serif;color:#0F172A;">{{ dateFieldLabel }}</span>
+      </button>
+      <button style="flex:1;display:flex;align-items:center;gap:8px;padding:13px 14px;border-radius:14px;background:#F8FAFC;border:1px solid {{ timeFieldBorder }};" onClick="{{ openTimePicker }}">
+        <svg viewBox="0 0 24 24" width="17" height="17"><circle cx="12" cy="12" r="8.5" stroke="#2563EB" stroke-width="2" fill="none"/><path d="M12 8v4l3 2" stroke="#2563EB" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        <span style="font:600 13.5px sans-serif;color:#0F172A;">{{ timeFieldLabel }}</span>
+      </button>
+    </div>
+    <sc-if value="{{ showDateTimeHint }}"><div style="font:600 12px sans-serif;color:#DC2626;margin:0 0 12px;">Chọn ngày và giờ để đặt nhắc nhở</div></sc-if>
+    <div style="background:#EFF4FF;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:8px;margin:12px 0 18px;">
+      <svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 6v6l4 2" stroke="#2563EB" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="#2563EB" stroke-width="2" fill="none"/></svg>
+      <div style="font:600 12.5px sans-serif;color:#2563EB;flex:1;">{{ reminderPreviewText }}</div>
+    </div>
+    <div style="font:700 12.5px sans-serif;color:#94A3B8;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em;">Mức độ ưu tiên</div>
+    <div style="display:flex;gap:8px;margin-bottom:18px;">
+      <sc-for list="{{ formPriorityOptions }}" as="opt" hint-placeholder-count="3">
+        <button style="{{ opt.style }}" onClick="{{ opt.onClick }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+    <div style="font:700 12.5px sans-serif;color:#94A3B8;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em;">Danh mục</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;">
+      <sc-for list="{{ formCategoryOptions }}" as="opt" hint-placeholder-count="5">
+        <button style="{{ opt.style }}" onClick="{{ opt.onClick }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+    <div style="font:700 12.5px sans-serif;color:#94A3B8;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em;">Lặp lại</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;">
+      <sc-for list="{{ formRepeatOptions }}" as="opt" hint-placeholder-count="3">
+        <button style="{{ opt.style }}" onClick="{{ opt.onClick }}">{{ opt.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:13px 14px;border-radius:14px;background:#F8FAFC;border:1px solid #E2E8F0;">
+      <svg viewBox="0 0 24 24" width="17" height="17"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z" stroke="#94A3B8" stroke-width="2" fill="none"/><circle cx="12" cy="9.5" r="2.2" stroke="#94A3B8" stroke-width="2" fill="none"/></svg>
+      <input value="{{ form.location }}" onInput="{{ onLocationInput }}" placeholder="Thêm địa điểm (không bắt buộc)" style="border:none;background:transparent;outline:none;font:500 14px sans-serif;color:#0F172A;flex:1;"></input>
+    </div>
+    <button style="width:100%;margin-top:20px;padding:13px;border-radius:14px;background:#fff;border:1px solid #E2E8F0;font:700 13.5px sans-serif;color:#2563EB;" onClick="{{ previewNotification }}">Xem trước thông báo nhắc nhở</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showDetail }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:#F8FAFC;z-index:30;display:flex;flex-direction:column;animation:sheetUp .25s ease-out;">
+  <div style="flex:none;display:flex;align-items:center;justify-content:space-between;padding:22px 18px 14px;border-bottom:1px solid #F1F5F9;">
+    <button style="background:none;border:none;padding:6px;" onClick="{{ closeDetail }}"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M15 5l-7 7 7 7" stroke="#0F172A" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div style="font:700 15.5px 'Space Grotesk',sans-serif;color:#0F172A;">Chi tiết công việc</div>
+    <button style="background:none;border:none;padding:6px;" onClick="{{ editFromDetail }}"><svg viewBox="0 0 24 24" width="19" height="19"><path d="M4 20l1-4L17 4l3 3-12 12-4 1z" stroke="#2563EB" stroke-width="2" fill="none" stroke-linejoin="round"/></svg></button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:20px 20px 40px;">
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:18px;">
+      <button style="{{ detail.checkboxStyle }}" onClick="{{ detail.toggleClick }}"><sc-if value="{{ detail.completed }}"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if></button>
+      <div style="font:700 20px/1.35 'Space Grotesk',sans-serif;color:{{ detail.titleColor }};text-decoration:{{ detail.titleDecoration }};">{{ detail.title }}</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;">
+      <span style="font:600 12px sans-serif;color:{{ detail.categoryColor }};background:{{ detail.categoryTint }};padding:5px 11px;border-radius:8px;">{{ detail.categoryLabel }}</span>
+      <span style="font:600 12px sans-serif;color:{{ detail.priorityColor }};background:{{ detail.priorityBg }};padding:5px 11px;border-radius:8px;">Ưu tiên {{ detail.priorityLabel }}</span>
+    </div>
+    <sc-if value="{{ detail.hasDesc }}"><div style="font:500 14.5px/1.6 sans-serif;color:#334155;margin-bottom:18px;">{{ detail.desc }}</div></sc-if>
+    <div style="background:#F8FAFC;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <svg viewBox="0 0 24 24" width="18" height="18"><rect x="4" y="5" width="16" height="15" rx="3" stroke="#2563EB" stroke-width="2" fill="none"/><path d="M4 10h16M8 3v4M16 3v4" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/></svg>
+        <div style="font:600 14px sans-serif;color:#0F172A;">{{ detail.dateTimeLabel }}</div>
+      </div>
+      <sc-if value="{{ detail.hasLocation }}"><div style="display:flex;align-items:center;gap:10px;"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z" stroke="#2563EB" stroke-width="2" fill="none"/><circle cx="12" cy="9.5" r="2.2" stroke="#2563EB" stroke-width="2" fill="none"/></svg><div style="font:600 14px sans-serif;color:#0F172A;">{{ detail.location }}</div></div></sc-if>
+      <sc-if value="{{ detail.isRepeat }}"><div style="display:flex;align-items:center;gap:10px;"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 8h11a3 3 0 0 1 3 3v1M20 16H9a3 3 0 0 1-3-3v-1" stroke="#2563EB" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M15 5l3 3-3 3M9 19l-3-3 3-3" stroke="#2563EB" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font:600 14px sans-serif;color:#0F172A;">{{ detail.repeatLabel }}</div></div></sc-if>
+    </div>
+    <sc-if value="{{ detail.completed }}">
+      <div style="font:600 13.5px sans-serif;color:#16A34A;background:#DCFCE7;padding:12px 14px;border-radius:12px;margin-bottom:18px;">Đã hoàn thành lúc {{ detail.completedTimeLabel }}</div>
+    </sc-if>
+    <sc-if value="{{ detail.showCountdown }}">
+      <div style="font:700 14px sans-serif;color:{{ detail.countdownColor }};padding:12px 14px;border-radius:12px;background:{{ detail.countdownBg }};margin-bottom:18px;">{{ detail.countdownLabel }}</div>
+    </sc-if>
+    <button style="width:100%;padding:14px;border-radius:14px;background:#fff;border:1px solid #FCA5A5;font:700 14px sans-serif;color:#DC2626;" onClick="{{ requestDelete }}">Xoá công việc</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showDatePicker }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:rgba(15,23,42,.45);z-index:50;" onClick="{{ closeDatePicker }}">
+  <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:320px;background:#fff;border-radius:22px;padding:20px;animation:modalPop .18s ease-out;" onClick="{{ stopClick }}">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <button style="{{ prevMonthStyle }}" onClick="{{ prevMonth }}"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div style="font:700 15px 'Space Grotesk',sans-serif;color:#0F172A;">{{ calendarMonthLabel }}</div>
+      <button style="background:none;border:none;color:#0F172A;padding:6px;" onClick="{{ nextMonth }}"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font:600 11px sans-serif;color:#94A3B8;margin-bottom:6px;">
+      <div>T2</div><div>T3</div><div>T4</div><div>T5</div><div>T6</div><div>T7</div><div>CN</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;">
+      <sc-for list="{{ calendarCells }}" as="cell" hint-placeholder-count="42">
+        <button style="{{ cell.style }}" onClick="{{ cell.onClick }}">{{ cell.dayNum }}</button>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showTimePicker }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:rgba(15,23,42,.45);z-index:50;" onClick="{{ closeTimePicker }}">
+  <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:300px;background:#fff;border-radius:22px;padding:22px 20px;animation:modalPop .18s ease-out;" onClick="{{ stopClick }}">
+    <div style="font:700 15px 'Space Grotesk',sans-serif;color:#0F172A;margin-bottom:16px;text-align:center;">Chọn giờ nhắc</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:18px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+        <button style="{{ stepperBtnStyle }}" onClick="{{ incHour }}">+</button>
+        <div style="font:700 34px 'Space Grotesk',sans-serif;color:#0F172A;width:64px;text-align:center;">{{ draftHourLabel }}</div>
+        <button style="{{ stepperBtnStyle }}" onClick="{{ decHour }}">–</button>
+      </div>
+      <div style="font:700 30px 'Space Grotesk',sans-serif;color:#CBD5E1;">:</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+        <button style="{{ stepperBtnStyle }}" onClick="{{ incMinute }}">+</button>
+        <div style="font:700 34px 'Space Grotesk',sans-serif;color:#0F172A;width:64px;text-align:center;">{{ draftMinuteLabel }}</div>
+        <button style="{{ stepperBtnStyle }}" onClick="{{ decMinute }}">–</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:18px;">
+      <sc-for list="{{ quickTimes }}" as="qt" hint-placeholder-count="5">
+        <button style="padding:7px 12px;border-radius:10px;background:#F1F5F9;border:none;font:600 12.5px sans-serif;color:#334155;" onClick="{{ qt.onClick }}">{{ qt.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button style="flex:1;padding:12px;border-radius:12px;background:#F1F5F9;border:none;font:700 13.5px sans-serif;color:#334155;" onClick="{{ closeTimePicker }}">Hủy</button>
+      <button style="flex:1;padding:12px;border-radius:12px;background:#2563EB;border:none;font:700 13.5px sans-serif;color:#fff;" onClick="{{ confirmTime }}">Xác nhận</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showDeleteConfirm }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:rgba(15,23,42,.45);z-index:60;">
+  <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:280px;background:#fff;border-radius:20px;padding:22px 20px;text-align:center;animation:modalPop .18s ease-out;">
+    <div style="font:700 15.5px 'Space Grotesk',sans-serif;color:#0F172A;margin-bottom:6px;">Xoá công việc này?</div>
+    <div style="font:500 13px sans-serif;color:#64748B;margin-bottom:18px;">Hành động này không thể hoàn tác.</div>
+    <div style="display:flex;gap:10px;">
+      <button style="flex:1;padding:12px;border-radius:12px;background:#F1F5F9;border:none;font:700 13.5px sans-serif;color:#334155;" onClick="{{ cancelDelete }}">Hủy</button>
+      <button style="flex:1;padding:12px;border-radius:12px;background:#DC2626;border:none;font:700 13.5px sans-serif;color:#fff;" onClick="{{ confirmDelete }}">Xoá</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:14px;left:50%;transform:translateX(-50%);width:346px;background:rgba(250,250,252,.97);backdrop-filter:blur(6px);border-radius:18px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;box-shadow:0 12px 28px -8px rgba(15,23,42,.3);z-index:70;animation:toastDown .22s ease-out;">
+  <div style="width:34px;height:34px;border-radius:9px;background:#2563EB;display:flex;align-items:center;justify-content:center;flex:none;">
+    <svg viewBox="0 0 24 24" width="17" height="17"><path d="M12 21a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2zM18 9a6 6 0 1 0-12 0c0 3.2-1 4.5-2 5.5h16c-1-1-2-2.3-2-5.5z" stroke="#fff" stroke-width="1.8" fill="none" stroke-linejoin="round"/></svg>
+  </div>
+  <div style="flex:1;">
+    <div style="display:flex;justify-content:space-between;"><span style="font:700 12px sans-serif;color:#0F172A;">NLTASK</span><span style="font:500 11px sans-serif;color:#94A3B8;">bây giờ</span></div>
+    <div style="font:600 13.5px sans-serif;color:#0F172A;margin-top:1px;">{{ toastMsg.title }}</div>
+    <div style="font:500 12.5px sans-serif;color:#64748B;margin-top:1px;">Đến giờ: {{ toastMsg.time }}</div>
+  </div>
+</div>
+</sc-if>
+
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const CATEGORIES = [
+  {key:'work', label:'Công việc', color:'#2563EB', tint:'#EFF4FF'},
+  {key:'personal', label:'Cá nhân', color:'#7C3AED', tint:'#F5F0FF'},
+  {key:'study', label:'Học tập', color:'#0D9488', tint:'#ECFDF9'},
+  {key:'health', label:'Sức khỏe', color:'#E11D48', tint:'#FFF1F3'},
+  {key:'other', label:'Khác', color:'#64748B', tint:'#F1F5F9'},
+];
+const PRIORITIES = [
+  {key:'low', label:'Thấp', color:'#16A34A', bg:'#DCFCE7'},
+  {key:'medium', label:'Trung bình', color:'#D97706', bg:'#FEF3C7'},
+  {key:'high', label:'Cao', color:'#DC2626', bg:'#FEE2E2'},
+];
+const REPEATS = [
+  {key:'none', label:'Không lặp lại'},
+  {key:'daily', label:'Hàng ngày'},
+  {key:'weekly', label:'Hàng tuần'},
+];
+const WEEKDAY_FULL = ['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
+const WEEKDAY_SHORT = ['CN','T2','T3','T4','T5','T6','T7'];
+
+function pad2(n){ return n<10 ? '0'+n : ''+n; }
+function isSameDay(a,b){ return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
+function findByKey(list,key){ return list.find(x=>x.key===key) || list[0]; }
+function fmtTime(d){ return pad2(d.getHours())+':'+pad2(d.getMinutes()); }
+function fmtDateShort(d){ return d.getDate()+' Th'+(d.getMonth()+1); }
+function fmtDateFull(d){ return WEEKDAY_FULL[d.getDay()]+', '+d.getDate()+' Tháng '+(d.getMonth()+1); }
+function humanize(ms){
+  const abs = Math.abs(ms);
+  const days = Math.floor(abs/86400000);
+  const hours = Math.floor((abs%86400000)/3600000);
+  const mins = Math.floor((abs%3600000)/60000);
+  if(days>=1) return days+' ngày'+(hours>0?' '+hours+' giờ':'');
+  if(hours>=1) return hours+' giờ'+(mins>0?' '+mins+' phút':'');
+  return mins+' phút';
+}
+
+class Component extends DCLogic {
+  state = (()=>{
+    const now = new Date();
+    const mk = (dayOffset,h,m)=>{ const d=new Date(now); d.setDate(d.getDate()+dayOffset); d.setHours(h,m,0,0); return d; };
+    const tasks = [
+      {id:'1', title:'Họp giao ban đầu tuần', desc:'Báo cáo tiến độ dự án Alpha với các trưởng nhóm.', category:'work', priority:'high', repeat:'weekly', location:'Phòng họp A', dueAt: mk(0,9,0), completed:false, completedAt:null},
+      {id:'2', title:'Uống 2 lít nước', desc:'', category:'health', priority:'low', repeat:'daily', location:'', dueAt: mk(0,8,0), completed:true, completedAt: mk(0,8,5)},
+      {id:'3', title:'Gửi báo giá cho khách hàng B', desc:'Đính kèm bảng giá mới bản Excel, xác nhận lại điều khoản thanh toán.', category:'work', priority:'high', repeat:'none', location:'', dueAt: mk(0,11,0), completed:false, completedAt:null},
+      {id:'4', title:'Đón con tại trường', desc:'', category:'personal', priority:'medium', repeat:'none', location:'Trường Tiểu học Kim Đồng', dueAt: mk(0,17,0), completed:false, completedAt:null},
+      {id:'5', title:'Ôn tập chương 5 - Giải tích', desc:'Làm lại các bài tập trong sách bài tập, tr. 88-95.', category:'study', priority:'medium', repeat:'none', location:'', dueAt: mk(1,20,0), completed:false, completedAt:null},
+      {id:'6', title:'Khám sức khỏe định kỳ', desc:'', category:'health', priority:'medium', repeat:'none', location:'Bệnh viện Đa khoa', dueAt: mk(3,9,30), completed:false, completedAt:null},
+      {id:'7', title:'Nộp báo cáo tháng 8', desc:'Tổng hợp số liệu doanh thu và chi phí, gửi ban giám đốc.', category:'work', priority:'high', repeat:'none', location:'', dueAt: mk(5,17,0), completed:false, completedAt:null},
+      {id:'8', title:'Thanh toán tiền điện', desc:'', category:'personal', priority:'low', repeat:'none', location:'', dueAt: mk(-1,18,0), completed:true, completedAt: mk(-1,18,20)},
+      {id:'9', title:'Chạy bộ 5km', desc:'', category:'health', priority:'low', repeat:'daily', location:'Công viên', dueAt: mk(-1,6,0), completed:true, completedAt: mk(-1,6,35)},
+      {id:'10', title:'Đọc sách 30 phút', desc:'', category:'personal', priority:'low', repeat:'daily', location:'', dueAt: mk(-2,21,0), completed:true, completedAt: mk(-2,21,30)},
+    ];
+    return {
+      tasks, now, tab:'today', filterCategory:'all',
+      showAddSheet:false, editingId:null,
+      form:{title:'', desc:'', date:null, time:{h:9,m:0,set:false}, priority:'medium', category:'work', repeat:'none', location:''},
+      attemptedSave:false,
+      detailId:null,
+      showDatePicker:false, showTimePicker:false, showDeleteConfirm:false,
+      calendarMonth: new Date(now.getFullYear(), now.getMonth(), 1),
+      pickerTarget:'task', draftHour:9, draftMinute:0,
+      historySearch:'',
+      settings:{push:true, sound:true, vibrate:true, remindBefore:15, snooze:10, quietStart:'22:00', quietEnd:'07:00'},
+      toastMsg:null,
+    };
+  })();
+
+  componentDidMount(){
+    this._timer = setInterval(()=>this.setState({now:new Date()}), 30000);
+  }
+  componentWillUnmount(){
+    clearInterval(this._timer);
+    clearTimeout(this._toastTimer);
+  }
+
+  setTab(tab){ this.setState({tab}); }
+  setFilter(key){ this.setState({filterCategory:key}); }
+
+  buildItem(task, opts){
+    const cat = findByKey(CATEGORIES, task.category);
+    const pr = findByKey(PRIORITIES, task.priority);
+    const now = this.state.now;
+    const diffMs = task.dueAt - now;
+    const overdue = !task.completed && diffMs < 0;
+    return {
+      id: task.id,
+      title: task.title,
+      categoryColor: cat.color,
+      categoryLabel: cat.label,
+      isRepeat: task.repeat !== 'none',
+      completed: task.completed,
+      titleColor: task.completed ? '#94A3B8' : '#0F172A',
+      titleDecoration: task.completed ? 'line-through' : 'none',
+      timeLabel: fmtTime(task.dueAt),
+      dateShort: fmtDateShort(task.dueAt),
+      hasLocation: !!task.location,
+      location: task.location,
+      priorityLabel: pr.label,
+      priorityColor: pr.color,
+      priorityBg: pr.bg,
+      showRelative: !task.completed,
+      relativeLabel: task.completed ? '' : (overdue ? 'Quá hạn ' + humanize(diffMs) : 'Còn ' + humanize(diffMs)),
+      relativeColor: overdue ? '#DC2626' : (diffMs < 3600000 ? '#D97706' : '#64748B'),
+      checkboxStyle: 'width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;border:2px solid ' + (task.completed ? '#2563EB' : '#CBD5E1') + ';background:' + (task.completed ? '#2563EB' : '#fff') + ';padding:0;cursor:pointer;',
+      completedTimeLabel: task.completedAt ? fmtTime(task.completedAt) : '',
+      toggleClick: (e)=>{ e.stopPropagation(); this.toggleComplete(task.id); },
+      openDetail: ()=>this.openDetail(task.id),
+    };
+  }
+
+  toggleComplete(id){
+    this.setState(s=>({ tasks: s.tasks.map(t=> t.id===id ? {...t, completed: !t.completed, completedAt: !t.completed ? new Date() : null} : t) }));
+  }
+
+  openDetail(id){ this.setState({detailId:id}); }
+  closeDetail(){ this.setState({detailId:null}); }
+
+  openAdd(){
+    this.setState({
+      showAddSheet:true, editingId:null, attemptedSave:false,
+      form:{title:'', desc:'', date:null, time:{h:9,m:0,set:false}, priority:'medium', category:'work', repeat:'none', location:''},
+    });
+  }
+  openEdit(task){
+    this.setState({
+      showAddSheet:true, editingId:task.id, attemptedSave:false, detailId:null,
+      form:{
+        title:task.title, desc:task.desc||'',
+        date:new Date(task.dueAt.getFullYear(),task.dueAt.getMonth(),task.dueAt.getDate()),
+        time:{h:task.dueAt.getHours(), m:task.dueAt.getMinutes(), set:true},
+        priority:task.priority, category:task.category, repeat:task.repeat, location:task.location||'',
+      },
+    });
+  }
+  closeAddSheet(){ this.setState({showAddSheet:false}); }
+
+  saveTask(){
+    const f = this.state.form;
+    if(!f.title.trim() || !f.date || !f.time.set){ this.setState({attemptedSave:true}); return; }
+    const dueAt = new Date(f.date);
+    dueAt.setHours(f.time.h, f.time.m, 0, 0);
+    if(this.state.editingId){
+      this.setState(s=>({ tasks: s.tasks.map(t=> t.id===s.editingId ? {...t, title:f.title.trim(), desc:f.desc, priority:f.priority, category:f.category, repeat:f.repeat, location:f.location, dueAt} : t), showAddSheet:false }));
+    } else {
+      const id = 't' + Date.now();
+      this.setState(s=>({ tasks: [...s.tasks, {id, title:f.title.trim(), desc:f.desc, priority:f.priority, category:f.category, repeat:f.repeat, location:f.location, dueAt, completed:false, completedAt:null}], showAddSheet:false }));
+    }
+  }
+
+  requestDelete(){ this.setState({showDeleteConfirm:true}); }
+  cancelDelete(){ this.setState({showDeleteConfirm:false}); }
+  confirmDelete(){
+    const id = this.state.detailId;
+    this.setState(s=>({ tasks: s.tasks.filter(t=>t.id!==id), showDeleteConfirm:false, detailId:null }));
+  }
+
+  openDatePicker(){
+    const f = this.state.form;
+    this.setState({ showDatePicker:true, pickerTarget:'task', calendarMonth: f.date ? new Date(f.date.getFullYear(),f.date.getMonth(),1) : new Date(this.state.now.getFullYear(),this.state.now.getMonth(),1) });
+  }
+  closeDatePicker(){ this.setState({showDatePicker:false}); }
+  prevMonth(){
+    this.setState(s=>{
+      const m = new Date(s.calendarMonth); m.setMonth(m.getMonth()-1);
+      const cur = new Date(s.now.getFullYear(), s.now.getMonth(), 1);
+      if(m < cur) return {};
+      return {calendarMonth:m};
+    });
+  }
+  nextMonth(){ this.setState(s=>{ const m=new Date(s.calendarMonth); m.setMonth(m.getMonth()+1); return {calendarMonth:m}; }); }
+  commitDate(dateObj){ this.setState(s=>({ form:{...s.form, date:dateObj}, showDatePicker:false })); }
+
+  openTimePicker(){
+    const f = this.state.form;
+    this.setState({ showTimePicker:true, pickerTarget:'task', draftHour:f.time.h, draftMinute:f.time.m });
+  }
+  openQuietStart(){
+    const [h,m] = this.state.settings.quietStart.split(':').map(Number);
+    this.setState({showTimePicker:true, pickerTarget:'quietStart', draftHour:h, draftMinute:m});
+  }
+  openQuietEnd(){
+    const [h,m] = this.state.settings.quietEnd.split(':').map(Number);
+    this.setState({showTimePicker:true, pickerTarget:'quietEnd', draftHour:h, draftMinute:m});
+  }
+  closeTimePicker(){ this.setState({showTimePicker:false}); }
+  incHour(){ this.setState(s=>({draftHour:(s.draftHour+1)%24})); }
+  decHour(){ this.setState(s=>({draftHour:(s.draftHour+23)%24})); }
+  incMinute(){ this.setState(s=>({draftMinute:(s.draftMinute+5)%60})); }
+  decMinute(){ this.setState(s=>({draftMinute:(s.draftMinute+55)%60})); }
+  confirmTime(){
+    this.setState(s=>{
+      const label = pad2(s.draftHour)+':'+pad2(s.draftMinute);
+      if(s.pickerTarget==='task') return { form:{...s.form, time:{h:s.draftHour,m:s.draftMinute,set:true}}, showTimePicker:false };
+      if(s.pickerTarget==='quietStart') return { settings:{...s.settings, quietStart:label}, showTimePicker:false };
+      if(s.pickerTarget==='quietEnd') return { settings:{...s.settings, quietEnd:label}, showTimePicker:false };
+      return {showTimePicker:false};
+    });
+  }
+  quickSetTime(h,m){ this.setState({draftHour:h, draftMinute:m}, ()=>this.confirmTime()); }
+
+  onTitleInput(e){ const v=e.target.value; this.setState(s=>({form:{...s.form, title:v}})); }
+  onDescInput(e){ const v=e.target.value; this.setState(s=>({form:{...s.form, desc:v}})); }
+  onLocationInput(e){ const v=e.target.value; this.setState(s=>({form:{...s.form, location:v}})); }
+  onHistorySearch(e){ const v=e.target.value; this.setState({historySearch:v}); }
+
+  setFormField(field, val){ this.setState(s=>({form:{...s.form, [field]:val}})); }
+  toggleSetting(key){ this.setState(s=>({settings:{...s.settings, [key]: !s.settings[key]}})); }
+  setRemindBefore(v){ this.setState(s=>({settings:{...s.settings, remindBefore:v}})); }
+  setSnooze(v){ this.setState(s=>({settings:{...s.settings, snooze:v}})); }
+
+  previewNotification(){
+    const f = this.state.form;
+    clearTimeout(this._toastTimer);
+    this.setState({ toastMsg:{ title: f.title.trim() || 'Công việc của bạn', time: f.time.set ? pad2(f.time.h)+':'+pad2(f.time.m) : '--:--' } });
+    this._toastTimer = setTimeout(()=>this.setState({toastMsg:null}), 3200);
+  }
+
+  editFromDetail(){
+    const task = this.state.tasks.find(t=>t.id===this.state.detailId);
+    if(task) this.openEdit(task);
+  }
+
+  generateCalendarCells(){
+    const s = this.state;
+    const month = s.calendarMonth;
+    const year = month.getFullYear(), mo = month.getMonth();
+    const first = new Date(year, mo, 1);
+    const startOffset = (first.getDay()+6)%7;
+    const gridStart = new Date(year, mo, 1-startOffset);
+    const todayMid = new Date(s.now.getFullYear(), s.now.getMonth(), s.now.getDate());
+    const selected = s.form.date;
+    const cells = [];
+    for(let i=0;i<42;i++){
+      const d = new Date(gridStart); d.setDate(gridStart.getDate()+i);
+      const inMonth = d.getMonth()===mo;
+      const isPast = d < todayMid;
+      const isToday = isSameDay(d, s.now);
+      const isSelected = selected && isSameDay(d, selected);
+      let color = '#0F172A';
+      if(!inMonth) color = '#E2E8F0';
+      else if(isPast) color = '#CBD5E1';
+      else if(isSelected) color = '#fff';
+      else if(isToday) color = '#2563EB';
+      const style = 'width:38px;height:38px;border:none;border-radius:12px;font:600 13.5px sans-serif;cursor:'+(isPast?'default':'pointer')+';background:'+(isSelected?'#2563EB':'transparent')+';color:'+color+';';
+      cells.push({ key:i, dayNum:d.getDate(), style, onClick: isPast ? undefined : (()=>this.commitDate(d)) });
+    }
+    return cells;
+  }
+
+  renderVals(){
+    const s = this.state;
+    const now = s.now;
+    const catMatch = t => s.filterCategory==='all' || t.category===s.filterCategory;
+
+    const overdueTasks = s.tasks.filter(t=>!t.completed && catMatch(t) && t.dueAt < now);
+    const todayTasks = s.tasks.filter(t=>!t.completed && catMatch(t) && isSameDay(t.dueAt, now) && t.dueAt >= now);
+    const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23,59,59,999);
+    const upcomingTasks = s.tasks.filter(t=>!t.completed && catMatch(t) && t.dueAt > endOfToday).sort((a,b)=>a.dueAt-b.dueAt);
+
+    const todaysAll = s.tasks.filter(t=>isSameDay(t.dueAt, now));
+    const todayTotalCount = todaysAll.length;
+    const todayCompletedCount = todaysAll.filter(t=>t.completed).length;
+    const todayProgressPct = todayTotalCount ? Math.round(todayCompletedCount/todayTotalCount*100) : 0;
+
+    const filterChips = [{key:'all', label:'Tất cả'}, ...CATEGORIES].map(c=>{
+      const active = s.filterCategory===c.key;
+      return { label:c.label, style:'padding:8px 14px;border-radius:999px;font:600 13px sans-serif;white-space:nowrap;flex:none;border:none;background:'+(active?'linear-gradient(135deg,#3B7CF6,#152A63)':'#fff')+';color:'+(active?'#fff':'#334155')+';box-shadow:'+(active?'0 8px 16px -8px rgba(21,42,99,.5)':'0 1px 2px rgba(15,23,42,.03),0 6px 14px -10px rgba(15,23,42,.18)')+';', onClick: ()=>this.setFilter(c.key) };
+    });
+
+    const allCompletedTasks = s.tasks.filter(t=>t.completed).sort((a,b)=>b.completedAt-a.completedAt);
+    const q = s.historySearch.trim().toLowerCase();
+    const filteredCompleted = q ? allCompletedTasks.filter(t=>t.title.toLowerCase().includes(q)) : allCompletedTasks;
+    const groupsMap = [];
+    filteredCompleted.forEach(t=>{
+      let label;
+      if(isSameDay(t.completedAt, now)) label = 'Hôm nay';
+      else { const yst=new Date(now); yst.setDate(yst.getDate()-1); label = isSameDay(t.completedAt,yst) ? 'Hôm qua' : fmtDateShort(t.completedAt); }
+      let g = groupsMap.find(x=>x.label===label);
+      if(!g){ g = {label, items:[]}; groupsMap.push(g); }
+      g.items.push(this.buildItem(t));
+    });
+
+    const weekStart = new Date(now); weekStart.setDate(now.getDate() - ((now.getDay()+6)%7)); weekStart.setHours(0,0,0,0);
+    const weekDays = [0,1,2,3,4,5,6].map(i=>{ const d=new Date(weekStart); d.setDate(weekStart.getDate()+i); return d; });
+    const counts = weekDays.map(d=>s.tasks.filter(t=>t.completed && isSameDay(t.completedAt,d)).length);
+    const maxCount = Math.max(1, ...counts);
+    const weekBars = weekDays.map((d,i)=>({ label: WEEKDAY_SHORT[(d.getDay())]==='CN'&&i===6?'CN':['T2','T3','T4','T5','T6','T7','CN'][i], count: counts[i], heightPx: (8 + counts[i]/maxCount*72) + 'px', color: isSameDay(d,now) ? '#2563EB' : '#BFDBFE', labelColor: isSameDay(d,now) ? '#2563EB' : '#94A3B8' }));
+
+    const weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate()+7);
+    const weekTasks = s.tasks.filter(t=>t.dueAt>=weekStart && t.dueAt<weekEnd);
+    const weekCompleted = weekTasks.filter(t=>t.completed).length;
+    const completionRateWeek = weekTasks.length ? Math.round(weekCompleted/weekTasks.length*100) : 0;
+    const donutStyle = 'background:conic-gradient(#2563EB '+completionRateWeek+'%, #E2E8F0 0)';
+
+    let streakDays = 0;
+    for(let i=0;i<60;i++){ const d=new Date(now); d.setDate(now.getDate()-i); const c = s.tasks.some(t=>t.completed && isSameDay(t.completedAt,d)); if(c) streakDays++; else break; }
+
+    const catCounts = CATEGORIES.map(c=>({...c, count: allCompletedTasks.filter(t=>t.category===c.key).length}));
+    const totalCatCompleted = Math.max(1, catCounts.reduce((a,c)=>a+c.count,0));
+    const categoryBreakdown = catCounts.filter(c=>c.count>0).map(c=>({ label:c.label, color:c.color, count:c.count, pct: Math.round(c.count/totalCatCompleted*100) }));
+
+    const mkSwitch = (key)=>({
+      trackStyle: 'width:46px;height:27px;border-radius:14px;border:none;padding:2px;position:relative;background:'+(s.settings[key] ? '#2563EB' : '#E2E8F0')+';transition:background .15s;',
+      knobStyle: 'width:23px;height:23px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transform:translateX('+(s.settings[key] ? '19px' : '0')+');transition:transform .15s;',
+      onClick: ()=>this.toggleSetting(key),
+    });
+
+    const remindBeforeOptions = [0,5,15,30].map(v=>({ label: v===0?'Đúng giờ':v+' phút', style:'padding:9px 14px;border-radius:10px;font:600 13px sans-serif;border:1px solid '+(s.settings.remindBefore===v?'#2563EB':'#E2E8F0')+';background:'+(s.settings.remindBefore===v?'#2563EB':'#fff')+';color:'+(s.settings.remindBefore===v?'#fff':'#334155')+';', onClick: ()=>this.setRemindBefore(v) }));
+    const snoozeOptions = [5,10,15,20].map(v=>({ label: v+' phút', style:'padding:9px 14px;border-radius:10px;font:600 13px sans-serif;border:1px solid '+(s.settings.snooze===v?'#2563EB':'#E2E8F0')+';background:'+(s.settings.snooze===v?'#2563EB':'#fff')+';color:'+(s.settings.snooze===v?'#fff':'#334155')+';', onClick: ()=>this.setSnooze(v) }));
+
+    const navColor = key => s.tab===key ? '#2563EB' : '#94A3B8';
+    const navToday = { color: navColor('today'), onClick: ()=>this.setTab('today') };
+    const navHistory = { color: navColor('history'), onClick: ()=>this.setTab('history') };
+    const navStats = { color: navColor('stats'), onClick: ()=>this.setTab('stats') };
+    const navSettings = { color: navColor('settings'), onClick: ()=>this.setTab('settings') };
+
+    const formPriorityOptions = PRIORITIES.map(p=>{ const active = s.form.priority===p.key; return { label:p.label, style:'flex:1;padding:10px;border-radius:12px;font:700 13px sans-serif;border:1px solid '+(active?p.color:'#E2E8F0')+';background:'+(active?p.bg:'#fff')+';color:'+(active?p.color:'#334155')+';', onClick: ()=>this.setFormField('priority',p.key) }; });
+    const formCategoryOptions = CATEGORIES.map(c=>{ const active = s.form.category===c.key; return { label:c.label, style:'padding:9px 14px;border-radius:10px;font:600 13px sans-serif;border:1px solid '+(active?c.color:'#E2E8F0')+';background:'+(active?c.tint:'#fff')+';color:'+(active?c.color:'#334155')+';', onClick: ()=>this.setFormField('category',c.key) }; });
+    const formRepeatOptions = REPEATS.map(r=>{ const active = s.form.repeat===r.key; return { label:r.label, style:'padding:9px 14px;border-radius:10px;font:600 13px sans-serif;border:1px solid '+(active?'#2563EB':'#E2E8F0')+';background:'+(active?'#EFF4FF':'#fff')+';color:'+(active?'#2563EB':'#334155')+';', onClick: ()=>this.setFormField('repeat',r.key) }; });
+
+    const quickTimes = [{h:8,m:0},{h:12,m:0},{h:18,m:0},{h:20,m:0},{h:21,m:0}].map(qt=>({ label: pad2(qt.h)+':'+pad2(qt.m), onClick: ()=>this.quickSetTime(qt.h,qt.m) }));
+
+    let detail = null;
+    const detailTask = s.detailId ? s.tasks.find(t=>t.id===s.detailId) : null;
+    if(detailTask){
+      const cat = findByKey(CATEGORIES, detailTask.category);
+      const pr = findByKey(PRIORITIES, detailTask.priority);
+      const diffMs = detailTask.dueAt - now;
+      const overdue = !detailTask.completed && diffMs < 0;
+      detail = {
+        title: detailTask.title,
+        titleColor: detailTask.completed ? '#94A3B8' : '#0F172A',
+        titleDecoration: detailTask.completed ? 'line-through' : 'none',
+        categoryLabel: cat.label, categoryColor: cat.color, categoryTint: cat.tint,
+        priorityLabel: pr.label, priorityColor: pr.color, priorityBg: pr.bg,
+        hasDesc: !!detailTask.desc, desc: detailTask.desc,
+        dateTimeLabel: fmtDateFull(detailTask.dueAt) + ' · ' + fmtTime(detailTask.dueAt),
+        hasLocation: !!detailTask.location, location: detailTask.location,
+        isRepeat: detailTask.repeat !== 'none', repeatLabel: findByKey(REPEATS, detailTask.repeat).label,
+        completed: detailTask.completed,
+        completedTimeLabel: detailTask.completedAt ? fmtTime(detailTask.completedAt) : '',
+        showCountdown: !detailTask.completed,
+        countdownLabel: overdue ? 'Quá hạn ' + humanize(diffMs) : 'Còn ' + humanize(diffMs) + ' nữa',
+        countdownColor: overdue ? '#DC2626' : '#2563EB',
+        countdownBg: overdue ? '#FEE2E2' : '#EFF4FF',
+        checkboxStyle: 'width:30px;height:30px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;border:2px solid ' + (detailTask.completed ? '#2563EB' : '#CBD5E1') + ';background:' + (detailTask.completed ? '#2563EB' : '#fff') + ';padding:0;cursor:pointer;margin-top:3px;',
+        toggleClick: ()=>this.toggleComplete(detailTask.id),
+      };
+    }
+
+    const draftDate = new Date();
+    const stepperBtnStyle = 'width:36px;height:36px;border-radius:10px;background:#F1F5F9;border:none;font:700 16px sans-serif;color:#2563EB;';
+    const prevCur = new Date(now.getFullYear(), now.getMonth(), 1);
+    const canGoPrev = s.calendarMonth > prevCur;
+
+    return {
+      isTodayTab: s.tab==='today', isHistoryTab: s.tab==='history', isStatsTab: s.tab==='stats', isSettingsTab: s.tab==='settings',
+      weekdayLabel: WEEKDAY_FULL[now.getDay()], dateLabel: now.getDate()+' Tháng '+(now.getMonth()+1)+', '+now.getFullYear(),
+      todayCompletedCount, todayTotalCount, todayProgressPct,
+      todayProgressGradient: 'conic-gradient(#fff '+todayProgressPct+'%, rgba(255,255,255,.3) 0)',
+      filterChips,
+      hasOverdue: overdueTasks.length>0, overdueItems: overdueTasks.map(t=>this.buildItem(t)),
+      hasToday: todayTasks.length>0, hasNoToday: todayTasks.length===0, todayItems: todayTasks.map(t=>this.buildItem(t)),
+      hasUpcoming: upcomingTasks.length>0, upcomingItems: upcomingTasks.map(t=>this.buildItem(t)),
+      allCompletedCount: allCompletedTasks.length,
+      historySearch: s.historySearch, onHistorySearch: this.onHistorySearch.bind(this),
+      hasHistory: groupsMap.length>0, hasNoHistory: groupsMap.length===0, historyGroups: groupsMap,
+      completionRateWeek, donutStyle, streakDays, weekBars, categoryBreakdown,
+      switches: { push: mkSwitch('push'), sound: mkSwitch('sound'), vibrate: mkSwitch('vibrate') },
+      remindBeforeOptions, snoozeOptions, settings: s.settings,
+      openQuietStart: this.openQuietStart.bind(this), openQuietEnd: this.openQuietEnd.bind(this),
+      navToday, navHistory, navStats, navSettings, showFab: s.tab==='today' && !s.showAddSheet && !s.detailId,
+      openAdd: this.openAdd.bind(this),
+      showAddSheet: s.showAddSheet, sheetTitle: s.editingId ? 'Sửa công việc' : 'Thêm công việc',
+      closeAddSheet: this.closeAddSheet.bind(this), saveTask: this.saveTask.bind(this),
+      form: s.form, onTitleInput: this.onTitleInput.bind(this), onDescInput: this.onDescInput.bind(this), onLocationInput: this.onLocationInput.bind(this),
+      titleInputStyle: 'width:100%;border:none;border-bottom:2px solid '+(s.attemptedSave && !s.form.title.trim() ? '#DC2626' : '#E2E8F0')+';padding:8px 2px 12px;font:700 20px \'Space Grotesk\',sans-serif;color:#0F172A;outline:none;margin-bottom:6px;',
+      showTitleHint: s.attemptedSave && !s.form.title.trim(),
+      showDateTimeHint: s.attemptedSave && (!s.form.date || !s.form.time.set),
+      dateFieldLabel: s.form.date ? fmtDateShort(s.form.date) : 'Chọn ngày',
+      dateFieldBorder: s.attemptedSave && !s.form.date ? '#FCA5A5' : '#E2E8F0',
+      timeFieldLabel: s.form.time.set ? pad2(s.form.time.h)+':'+pad2(s.form.time.m) : 'Chọn giờ',
+      timeFieldBorder: s.attemptedSave && !s.form.time.set ? '#FCA5A5' : '#E2E8F0',
+      reminderPreviewText: (s.form.date && s.form.time.set) ? ('Sẽ nhắc bạn vào '+fmtDateFull(s.form.date)+' lúc '+pad2(s.form.time.h)+':'+pad2(s.form.time.m)) : 'Chọn ngày & giờ để đặt nhắc nhở',
+      formPriorityOptions, formCategoryOptions, formRepeatOptions,
+      openDatePicker: this.openDatePicker.bind(this), closeDatePicker: this.closeDatePicker.bind(this),
+      showDatePicker: s.showDatePicker,
+      calendarMonthLabel: 'Tháng '+(s.calendarMonth.getMonth()+1)+', '+s.calendarMonth.getFullYear(),
+      prevMonth: this.prevMonth.bind(this), nextMonth: this.nextMonth.bind(this),
+      prevMonthStyle: 'background:none;border:none;padding:6px;color:'+(canGoPrev?'#0F172A':'#E2E8F0')+';',
+      calendarCells: this.generateCalendarCells(),
+      openTimePicker: this.openTimePicker.bind(this), closeTimePicker: this.closeTimePicker.bind(this), confirmTime: this.confirmTime.bind(this),
+      showTimePicker: s.showTimePicker,
+      draftHourLabel: pad2(s.draftHour), draftMinuteLabel: pad2(s.draftMinute),
+      incHour: this.incHour.bind(this), decHour: this.decHour.bind(this), incMinute: this.incMinute.bind(this), decMinute: this.decMinute.bind(this),
+      stepperBtnStyle, quickTimes,
+      previewNotification: this.previewNotification.bind(this),
+      showDetail: !!detailTask, detail, closeDetail: this.closeDetail.bind(this), editFromDetail: this.editFromDetail.bind(this),
+      requestDelete: this.requestDelete.bind(this),
+      showDeleteConfirm: s.showDeleteConfirm, cancelDelete: this.cancelDelete.bind(this), confirmDelete: this.confirmDelete.bind(this),
+      hasToast: !!s.toastMsg, toastMsg: s.toastMsg || {title:'', time:''},
+      stopClick: (e)=>e.stopPropagation(),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

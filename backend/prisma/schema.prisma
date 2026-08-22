@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Category {
+  WORK
+  PERSONAL
+  STUDY
+  HEALTH
+  OTHER
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum RepeatType {
+  NONE
+  DAILY
+  WEEKLY
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  passwordHash  String
+  name          String
+  role          Role           @default(USER)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  tasks         Task[]
+  settings      Settings?
+  refreshTokens RefreshToken[]
+
+  @@map("users")
+}
+
+model Task {
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  desc        String?    @db.Text
+  category    Category   @default(OTHER)
+  priority    Priority   @default(MEDIUM)
+  repeat      RepeatType @default(NONE)
+  location    String?
+  dueAt       DateTime
+  completed   Boolean    @default(false)
+  completedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([userId, dueAt])
+  @@index([userId, completed])
+  @@map("tasks")
+}
+
+model Settings {
+  id           String  @id @default(cuid())
+  userId       String  @unique
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  push         Boolean @default(true)
+  sound        Boolean @default(true)
+  vibrate      Boolean @default(true)
+  remindBefore Int     @default(15)
+  snooze       Int     @default(10)
+  quietStart   String  @default("22:00")
+  quietEnd     String  @default("07:00")
+
+  @@map("settings")
+}
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
