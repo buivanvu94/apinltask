@@ -1,0 +1,43 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "backend/**"
+      - ".github/workflows/deploy-backend.yml"
+
+concurrency:
+  group: deploy-backend
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy backend to production
+    runs-on: [self-hosted, apinltask]
+    steps:
+      - name: Deploy to Production
+        run: |
+          REPO_DIR="/var/www/apinltask_usr/data/www/apinltask.nguyenluan.vn"
+          APP_DIR="$REPO_DIR/backend"
+          export GIT_SSH_COMMAND="ssh -F /home/nladmin/.ssh/config -o IdentitiesOnly=yes -i /home/nladmin/.ssh/apinltask_deploy_ed25519"
+          export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
+
+          cd "$REPO_DIR"
+          echo "=== Fetching latest code ==="
+          git fetch origin master
+          git reset --hard origin/master
+
+          cd "$APP_DIR"
+          echo "=== Installing dependencies ==="
+          npm install
+
+          echo "=== Running Prisma migrations ==="
+          npx prisma generate
+          npx prisma migrate deploy
+
+          echo "=== Reloading PM2 ==="
+          pm2 reload ecosystem.config.js --update-env
+
+          echo "=== Deployment complete! ==="
