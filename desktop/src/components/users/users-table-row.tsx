@@ -46,15 +46,15 @@ export function UsersTableRow({
       {/* Avatar Initials */}
       <div
         style={{
-          width: '36px',
-          height: '36px',
+          width: '40px',
+          height: '40px',
           borderRadius: '10px',
           background: isAdmin ? 'linear-gradient(135deg, #7C3AED, #4C1D95)' : 'linear-gradient(135deg, #3B7CF6, #152A63)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           color: '#fff',
-          font: "700 14px 'Space Grotesk', sans-serif",
+          font: "700 15px 'Space Grotesk', sans-serif",
           flex: 'none',
           boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
         }}
@@ -64,15 +64,15 @@ export function UsersTableRow({
 
       {/* User Info */}
       <div style={{ flex: '1.2', minWidth: 0 }}>
-        <div style={{ font: '600 14px sans-serif', color: '#0F172A', display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div style={{ font: '600 15.5px sans-serif', color: '#0F172A', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.name}</span>
           {isSelf && (
-            <span style={{ font: '600 10.5px sans-serif', color: '#16A34A', background: '#DCFCE7', padding: '1px 6px', borderRadius: '4px' }}>
+            <span style={{ font: '600 11.5px sans-serif', color: '#16A34A', background: '#DCFCE7', padding: '1px 6px', borderRadius: '4px' }}>
               Bạn
             </span>
           )}
         </div>
-        <div style={{ font: '500 12.5px sans-serif', color: '#64748B', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <div style={{ font: '500 13.5px sans-serif', color: '#64748B', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {user.email}
         </div>
       </div>
@@ -81,11 +81,11 @@ export function UsersTableRow({
       <div style={{ width: '90px', flex: 'none' }}>
         <span
           style={{
-            font: '700 11.5px sans-serif',
+            font: '700 12.5px sans-serif',
             color: roleStyle.color,
             background: roleStyle.bg,
             border: `1px solid ${roleStyle.border}`,
-            padding: '3px 8px',
+            padding: '3px 10px',
             borderRadius: '6px',
           }}
         >
@@ -94,7 +94,7 @@ export function UsersTableRow({
       </div>
 
       {/* Created At */}
-      <div style={{ width: '80px', flex: 'none', font: '500 12.5px sans-serif', color: '#94A3B8' }}>
+      <div style={{ width: '90px', flex: 'none', font: '500 13.5px sans-serif', color: '#94A3B8' }}>
         {createdLabel}
       </div>
 
@@ -107,12 +107,13 @@ export function UsersTableRow({
             background: '#F1F5F9',
             border: 'none',
             borderRadius: '8px',
-            padding: '7px',
+            padding: '8px',
             display: 'flex',
             color: '#2563EB',
+            cursor: 'pointer',
           }}
         >
-          <svg viewBox="0 0 24 24" width="14" height="14">
+          <svg viewBox="0 0 24 24" width="15" height="15">
             <path d="M4 20l1-4L17 4l3 3-12 12-4 1z" stroke="currentColor" strokeWidth="2" fill="none" strokeLinejoin="round" />
           </svg>
         </button>
@@ -124,12 +125,13 @@ export function UsersTableRow({
             background: '#F1F5F9',
             border: 'none',
             borderRadius: '8px',
-            padding: '7px',
+            padding: '8px',
             display: 'flex',
             color: '#D97706',
+            cursor: 'pointer',
           }}
         >
-          <svg viewBox="0 0 24 24" width="14" height="14">
+          <svg viewBox="0 0 24 24" width="15" height="15">
             <path d="M21 2l-2 2m-2-2l2 2m-4 4l3-3 2 2-3 3M3 14a7 7 0 1 1 12 5l-7-7-5 2z" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
@@ -142,13 +144,13 @@ export function UsersTableRow({
             background: isSelf ? '#F8FAFC' : '#FEE2E2',
             border: 'none',
             borderRadius: '8px',
-            padding: '7px',
+            padding: '8px',
             display: 'flex',
             color: isSelf ? '#CBD5E1' : '#DC2626',
             cursor: isSelf ? 'not-allowed' : 'pointer',
           }}
         >
-          <svg viewBox="0 0 24 24" width="14" height="14">
+          <svg viewBox="0 0 24 24" width="15" height="15">
             <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
           </svg>
         </button>

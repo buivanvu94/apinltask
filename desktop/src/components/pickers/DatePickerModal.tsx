@@ -86,16 +86,16 @@ export function DatePickerModal({ initialDate, now, onSelectDate, onClose }: Dat
           left: '50%',
           top: '50%',
           transform: 'translate(-50%,-50%)',
-          width: '320px',
+          width: '340px',
           background: '#fff',
-          borderRadius: '22px',
-          padding: '20px',
+          borderRadius: '10px',
+          padding: '22px',
           animation: 'modalPop .18s ease-out',
           boxShadow: '0 20px 40px -10px rgba(15,23,42,.25)',
         }}
       >
         {/* Month Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
           <button
             onClick={handlePrevMonth}
             disabled={!canGoPrev}
@@ -107,25 +107,25 @@ export function DatePickerModal({ initialDate, now, onSelectDate, onClose }: Dat
               cursor: canGoPrev ? 'pointer' : 'default',
             }}
           >
-            <svg viewBox="0 0 24 24" width="16" height="16">
+            <svg viewBox="0 0 24 24" width="18" height="18">
               <path d="M15 6l-6 6 6 6" stroke="currentColor" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
-          <div style={{ font: "700 15px 'Space Grotesk',sans-serif", color: '#0F172A' }}>
+          <div style={{ font: "700 16.5px 'Space Grotesk',sans-serif", color: '#0F172A' }}>
             Tháng {calendarMonth.getMonth() + 1}, {calendarMonth.getFullYear()}
           </div>
           <button
             onClick={handleNextMonth}
             style={{ background: 'none', border: 'none', color: '#0F172A', padding: '6px', cursor: 'pointer' }}
           >
-            <svg viewBox="0 0 24 24" width="16" height="16">
+            <svg viewBox="0 0 24 24" width="18" height="18">
               <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         </div>
 
         {/* Days of Week Header */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', textAlign: 'center', font: '600 11px sans-serif', color: '#94A3B8', marginBottom: '6px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', textAlign: 'center', font: '600 12.5px sans-serif', color: '#94A3B8', marginBottom: '8px' }}>
           <div>T2</div>
           <div>T3</div>
           <div>T4</div>
@@ -136,7 +136,7 @@ export function DatePickerModal({ initialDate, now, onSelectDate, onClose }: Dat
         </div>
 
         {/* 42 Calendar Cells */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: '2px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: '3px' }}>
           {cells.map((cell, idx) => (
             <button
               key={idx}
@@ -145,11 +145,11 @@ export function DatePickerModal({ initialDate, now, onSelectDate, onClose }: Dat
                 if (!cell.isPast) onSelectDate(cell.date);
               }}
               style={{
-                width: '38px',
-                height: '38px',
+                width: '40px',
+                height: '40px',
                 border: 'none',
-                borderRadius: '12px',
-                font: '600 13.5px sans-serif',
+                borderRadius: '8px',
+                font: '600 14.5px sans-serif',
                 cursor: cell.isPast ? 'default' : 'pointer',
                 background: cell.isSelected ? '#2563EB' : 'transparent',
                 color: cell.color,

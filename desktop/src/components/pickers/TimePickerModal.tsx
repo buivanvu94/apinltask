@@ -39,12 +39,12 @@ export function TimePickerModal({
   };
 
   const stepperBtnStyle: React.CSSProperties = {
-    width: '36px',
-    height: '36px',
-    borderRadius: '10px',
+    width: '38px',
+    height: '38px',
+    borderRadius: '8px',
     background: '#F1F5F9',
     border: 'none',
-    font: '700 16px sans-serif',
+    font: '700 18px sans-serif',
     color: '#2563EB',
     cursor: 'pointer',
     display: 'flex',
@@ -69,25 +69,25 @@ export function TimePickerModal({
           left: '50%',
           top: '50%',
           transform: 'translate(-50%,-50%)',
-          width: '300px',
+          width: '320px',
           background: '#fff',
-          borderRadius: '22px',
-          padding: '22px 20px',
+          borderRadius: '10px',
+          padding: '24px 22px',
           animation: 'modalPop .18s ease-out',
           boxShadow: '0 20px 40px -10px rgba(15,23,42,.25)',
         }}
       >
-        <div style={{ font: "700 15px 'Space Grotesk',sans-serif", color: '#0F172A', marginBottom: '16px', textAlign: 'center' }}>
+        <div style={{ font: "700 17px 'Space Grotesk',sans-serif", color: '#0F172A', marginBottom: '18px', textAlign: 'center' }}>
           {title}
         </div>
 
         {/* Stepper Display */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '18px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '18px', marginBottom: '20px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
             <button style={stepperBtnStyle} onClick={incHour}>
               +
             </button>
-            <div style={{ font: "700 34px 'Space Grotesk',sans-serif", color: '#0F172A', width: '64px', textAlign: 'center' }}>
+            <div style={{ font: "700 38px 'Space Grotesk',sans-serif", color: '#0F172A', width: '70px', textAlign: 'center' }}>
               {pad2(hour)}
             </div>
             <button style={stepperBtnStyle} onClick={decHour}>
@@ -95,13 +95,13 @@ export function TimePickerModal({
             </button>
           </div>
 
-          <div style={{ font: "700 30px 'Space Grotesk',sans-serif", color: '#CBD5E1' }}>:</div>
+          <div style={{ font: "700 34px 'Space Grotesk',sans-serif", color: '#CBD5E1' }}>:</div>
 
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
             <button style={stepperBtnStyle} onClick={incMinute}>
               +
             </button>
-            <div style={{ font: "700 34px 'Space Grotesk',sans-serif", color: '#0F172A', width: '64px', textAlign: 'center' }}>
+            <div style={{ font: "700 38px 'Space Grotesk',sans-serif", color: '#0F172A', width: '70px', textAlign: 'center' }}>
               {pad2(minute)}
             </div>
             <button style={stepperBtnStyle} onClick={decMinute}>
@@ -111,17 +111,17 @@ export function TimePickerModal({
         </div>
 
         {/* Quick Times */}
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '18px' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '20px' }}>
           {quickTimes.map((qt) => (
             <button
               key={`${qt.h}:${qt.m}`}
               onClick={() => handleQuickSet(qt.h, qt.m)}
               style={{
-                padding: '7px 12px',
-                borderRadius: '10px',
+                padding: '8px 14px',
+                borderRadius: '8px',
                 background: '#F1F5F9',
                 border: 'none',
-                font: '600 12.5px sans-serif',
+                font: '600 13.5px sans-serif',
                 color: '#334155',
                 cursor: 'pointer',
               }}
@@ -137,11 +137,11 @@ export function TimePickerModal({
             onClick={onClose}
             style={{
               flex: 1,
-              padding: '12px',
-              borderRadius: '12px',
+              padding: '13px',
+              borderRadius: '10px',
               background: '#F1F5F9',
               border: 'none',
-              font: '700 13.5px sans-serif',
+              font: '700 14.5px sans-serif',
               color: '#334155',
               cursor: 'pointer',
             }}
@@ -152,11 +152,11 @@ export function TimePickerModal({
             onClick={() => onConfirm(hour, minute)}
             style={{
               flex: 1,
-              padding: '12px',
-              borderRadius: '12px',
+              padding: '13px',
+              borderRadius: '10px',
               background: '#2563EB',
               border: 'none',
-              font: '700 13.5px sans-serif',
+              font: '700 14.5px sans-serif',
               color: '#fff',
               cursor: 'pointer',
             }}

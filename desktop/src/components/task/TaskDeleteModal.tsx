@@ -21,19 +21,19 @@ export function TaskDeleteModal({ onConfirm, onCancel }: TaskDeleteModalProps) {
           left: '50%',
           top: '50%',
           transform: 'translate(-50%,-50%)',
-          width: '280px',
+          width: '300px',
           background: '#fff',
-          borderRadius: '20px',
-          padding: '22px 20px',
+          borderRadius: '10px',
+          padding: '24px 22px',
           textAlign: 'center',
           animation: 'modalPop .18s ease-out',
           boxShadow: '0 20px 40px -10px rgba(15,23,42,.25)',
         }}
       >
-        <div style={{ font: "700 15.5px 'Space Grotesk',sans-serif", color: '#0F172A', marginBottom: '6px' }}>
+        <div style={{ font: "700 17px 'Space Grotesk',sans-serif", color: '#0F172A', marginBottom: '8px' }}>
           Xoá công việc này?
         </div>
-        <div style={{ font: '500 13px sans-serif', color: '#64748B', marginBottom: '18px' }}>
+        <div style={{ font: '500 14px sans-serif', color: '#64748B', marginBottom: '20px', lineHeight: 1.4 }}>
           Hành động này không thể hoàn tác.
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
@@ -42,10 +42,10 @@ export function TaskDeleteModal({ onConfirm, onCancel }: TaskDeleteModalProps) {
             style={{
               flex: 1,
               padding: '12px',
-              borderRadius: '12px',
+              borderRadius: '10px',
               background: '#F1F5F9',
               border: 'none',
-              font: '700 13.5px sans-serif',
+              font: '700 14.5px sans-serif',
               color: '#334155',
               cursor: 'pointer',
             }}
@@ -57,10 +57,10 @@ export function TaskDeleteModal({ onConfirm, onCancel }: TaskDeleteModalProps) {
             style={{
               flex: 1,
               padding: '12px',
-              borderRadius: '12px',
+              borderRadius: '10px',
               background: '#DC2626',
               border: 'none',
-              font: '700 13.5px sans-serif',
+              font: '700 14.5px sans-serif',
               color: '#fff',
               cursor: 'pointer',
             }}

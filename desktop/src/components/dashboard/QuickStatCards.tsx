@@ -23,8 +23,8 @@ export function QuickStatCards({
           flex: 1,
           minWidth: '180px',
           background: '#fff',
-          borderRadius: '16px',
-          padding: '18px 20px',
+          borderRadius: '10px',
+          padding: '18px 22px',
           display: 'flex',
           alignItems: 'center',
           gap: '14px',
@@ -33,8 +33,8 @@ export function QuickStatCards({
       >
         <div
           style={{
-            width: '44px',
-            height: '44px',
+            width: '46px',
+            height: '46px',
             borderRadius: '50%',
             background: donutGradient,
             display: 'flex',
@@ -45,14 +45,14 @@ export function QuickStatCards({
         >
           <div
             style={{
-              width: '34px',
-              height: '34px',
+              width: '36px',
+              height: '36px',
               borderRadius: '50%',
               background: '#fff',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              font: "700 11px 'Space Grotesk',sans-serif",
+              font: "700 12px 'Space Grotesk',sans-serif",
               color: '#152A63',
             }}
           >
@@ -60,10 +60,10 @@ export function QuickStatCards({
           </div>
         </div>
         <div>
-          <div style={{ font: "700 19px 'Space Grotesk',sans-serif", color: '#0F172A' }}>
+          <div style={{ font: "700 22px 'Space Grotesk',sans-serif", color: '#0F172A' }}>
             {completedCount}/{totalCount}
           </div>
-          <div style={{ font: '600 12px sans-serif', color: '#94A3B8' }}>Hôm nay</div>
+          <div style={{ font: '600 13.5px sans-serif', color: '#94A3B8' }}>Hôm nay</div>
         </div>
       </div>
 
@@ -73,8 +73,8 @@ export function QuickStatCards({
           flex: 1,
           minWidth: '180px',
           background: '#fff',
-          borderRadius: '16px',
-          padding: '18px 20px',
+          borderRadius: '10px',
+          padding: '18px 22px',
           display: 'flex',
           alignItems: 'center',
           gap: '14px',
@@ -83,9 +83,9 @@ export function QuickStatCards({
       >
         <div
           style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '12px',
+            width: '46px',
+            height: '46px',
+            borderRadius: '10px',
             background: '#FEE2E2',
             display: 'flex',
             alignItems: 'center',
@@ -93,14 +93,14 @@ export function QuickStatCards({
             flex: 'none',
           }}
         >
-          <svg viewBox="0 0 24 24" width="20" height="20">
+          <svg viewBox="0 0 24 24" width="22" height="22">
             <path d="M12 8v5M12 16h0" stroke="#DC2626" strokeWidth="2.4" strokeLinecap="round" />
             <circle cx="12" cy="12" r="9" stroke="#DC2626" strokeWidth="2" fill="none" />
           </svg>
         </div>
         <div>
-          <div style={{ font: "700 19px 'Space Grotesk',sans-serif", color: '#0F172A' }}>{overdueCount}</div>
-          <div style={{ font: '600 12px sans-serif', color: '#94A3B8' }}>Quá hạn</div>
+          <div style={{ font: "700 22px 'Space Grotesk',sans-serif", color: '#0F172A' }}>{overdueCount}</div>
+          <div style={{ font: '600 13.5px sans-serif', color: '#94A3B8' }}>Quá hạn</div>
         </div>
       </div>
 
@@ -110,8 +110,8 @@ export function QuickStatCards({
           flex: 1,
           minWidth: '180px',
           background: '#fff',
-          borderRadius: '16px',
-          padding: '18px 20px',
+          borderRadius: '10px',
+          padding: '18px 22px',
           display: 'flex',
           alignItems: 'center',
           gap: '14px',
@@ -120,9 +120,9 @@ export function QuickStatCards({
       >
         <div
           style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '12px',
+            width: '46px',
+            height: '46px',
+            borderRadius: '10px',
             background: '#EFF4FF',
             display: 'flex',
             alignItems: 'center',
@@ -130,14 +130,14 @@ export function QuickStatCards({
             flex: 'none',
           }}
         >
-          <svg viewBox="0 0 24 24" width="20" height="20">
+          <svg viewBox="0 0 24 24" width="22" height="22">
             <rect x="4" y="5" width="16" height="15" rx="3" stroke="#2563EB" strokeWidth="2" fill="none" />
             <path d="M4 10h16M8 3v4M16 3v4" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </div>
         <div>
-          <div style={{ font: "700 19px 'Space Grotesk',sans-serif", color: '#0F172A' }}>{upcomingCount}</div>
-          <div style={{ font: '600 12px sans-serif', color: '#94A3B8' }}>Sắp tới</div>
+          <div style={{ font: "700 22px 'Space Grotesk',sans-serif", color: '#0F172A' }}>{upcomingCount}</div>
+          <div style={{ font: '600 13.5px sans-serif', color: '#94A3B8' }}>Sắp tới</div>
         </div>
       </div>
     </div>

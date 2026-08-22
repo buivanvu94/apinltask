@@ -19,14 +19,14 @@ export function SettingsSwitchItem({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '15px 18px',
+        padding: '16px 20px',
         borderBottom: borderBottom ? '1px solid #F1F5F9' : 'none',
       }}
     >
       <div>
-        <div style={{ font: '600 14.5px sans-serif', color: '#0F172A' }}>{label}</div>
+        <div style={{ font: '600 15.5px sans-serif', color: '#0F172A' }}>{label}</div>
         {sublabel && (
-          <div style={{ font: '500 12px sans-serif', color: '#94A3B8', marginTop: '2px' }}>
+          <div style={{ font: '500 13.5px sans-serif', color: '#94A3B8', marginTop: '2px' }}>
             {sublabel}
           </div>
         )}

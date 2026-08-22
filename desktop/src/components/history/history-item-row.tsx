@@ -19,11 +19,11 @@ export function HistoryItemRow({ item, onToggle, onSelect }: HistoryItemRowProps
       style={{
         background: '#fff',
         border: '1px solid rgba(15,23,42,.04)',
-        borderRadius: '14px',
-        padding: '13px 16px',
+        borderRadius: '10px',
+        padding: '14px 18px',
         marginBottom: '8px',
         display: 'flex',
-        gap: '12px',
+        gap: '14px',
         alignItems: 'center',
         boxShadow: '0 1px 2px rgba(15,23,42,.03),0 8px 18px -16px rgba(15,23,42,.12)',
         maxWidth: '840px',
@@ -34,8 +34,8 @@ export function HistoryItemRow({ item, onToggle, onSelect }: HistoryItemRowProps
         onClick={(e) => onToggle(e, item.id)}
         title="Bỏ đánh dấu hoàn thành"
         style={{
-          width: '22px',
-          height: '22px',
+          width: '24px',
+          height: '24px',
           borderRadius: '50%',
           flex: 'none',
           display: 'flex',
@@ -52,13 +52,13 @@ export function HistoryItemRow({ item, onToggle, onSelect }: HistoryItemRowProps
         </svg>
       </button>
 
-      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: cat.color, flex: 'none' }} />
+      <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: cat.color, flex: 'none' }} />
 
       <div
         style={{
           flex: 1,
           minWidth: 0,
-          font: '600 14.5px sans-serif',
+          font: '600 15.5px sans-serif',
           color: '#94A3B8',
           textDecoration: 'line-through',
           whiteSpace: 'nowrap',
@@ -69,7 +69,7 @@ export function HistoryItemRow({ item, onToggle, onSelect }: HistoryItemRowProps
         {item.title}
       </div>
 
-      <span style={{ font: '500 12.5px sans-serif', color: '#64748B', flex: 'none' }}>
+      <span style={{ font: '500 13.5px sans-serif', color: '#64748B', flex: 'none' }}>
         Hoàn thành lúc {compTime}
       </span>
     </div>

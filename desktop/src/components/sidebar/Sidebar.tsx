@@ -41,26 +41,25 @@ export function Sidebar({ currentTab, onSelectTab, onOpenAdd }: SidebarProps) {
       }}
     >
       {/* Brand Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '0 8px', marginBottom: '22px' }}>
-        <div
+      <div style={{ display: 'flex', alignItems: 'center', gap: '11px', padding: '0 6px', marginBottom: '22px' }}>
+        <img
+          src="/logo.png"
+          alt="NLTECH Logo"
           style={{
-            width: '34px',
-            height: '34px',
-            borderRadius: '10px',
-            background: 'linear-gradient(135deg,#3B7CF6,#152A63)',
+            width: '36px',
+            height: '36px',
+            objectFit: 'contain',
             flex: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 4px 10px rgba(59, 124, 246, 0.3)',
+            filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.25))',
           }}
-        >
-          <svg viewBox="0 0 24 24" width="18" height="18">
-            <path d="M5 13l4 4L19 7" stroke="#fff" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
-        <div style={{ font: "700 18px 'Space Grotesk',sans-serif", color: '#fff', letterSpacing: '.01em' }}>
-          NLTASK
+        />
+        <div>
+          <div style={{ font: "700 17px 'Space Grotesk',sans-serif", color: '#fff', letterSpacing: '.02em', lineHeight: 1.2 }}>
+            NLTECH
+          </div>
+          <div style={{ font: "600 11px sans-serif", color: 'rgba(255,255,255,0.5)', letterSpacing: '.04em' }}>
+            TASK MANAGER
+          </div>
         </div>
       </div>
 

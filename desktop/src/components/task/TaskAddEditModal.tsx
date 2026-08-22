@@ -82,7 +82,7 @@ export function TaskAddEditModal({
           width: '560px',
           maxHeight: '86vh',
           background: '#fff',
-          borderRadius: '22px',
+          borderRadius: '10px',
           display: 'flex',
           flexDirection: 'column',
           animation: 'modalPop .18s ease-out',
@@ -90,12 +90,12 @@ export function TaskAddEditModal({
         }}
       >
         {/* Header */}
-        <div style={{ flex: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 22px', borderBottom: '1px solid #F1F5F9' }}>
-          <div style={{ font: "700 16px 'Space Grotesk',sans-serif", color: '#0F172A' }}>
+        <div style={{ flex: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px', borderBottom: '1px solid #F1F5F9' }}>
+          <div style={{ font: "700 18px 'Space Grotesk',sans-serif", color: '#0F172A' }}>
             {editingTask ? 'Sửa công việc' : 'Thêm công việc'}
           </div>
-          <button onClick={onClose} style={{ background: '#F1F5F9', border: 'none', borderRadius: '8px', padding: '7px', cursor: 'pointer', display: 'flex' }}>
-            <svg viewBox="0 0 24 24" width="15" height="15">
+          <button onClick={onClose} style={{ background: '#F1F5F9', border: 'none', borderRadius: '8px', padding: '8px', cursor: 'pointer', display: 'flex' }}>
+            <svg viewBox="0 0 24 24" width="16" height="16">
               <path d="M6 6l12 12M18 6L6 18" stroke="#64748B" strokeWidth="2" strokeLinecap="round" />
             </svg>
           </button>
@@ -140,11 +140,11 @@ export function TaskAddEditModal({
         </div>
 
         {/* Footer Buttons */}
-        <div style={{ flex: 'none', display: 'flex', gap: '10px', padding: '16px 22px', borderTop: '1px solid #F1F5F9' }}>
+        <div style={{ flex: 'none', display: 'flex', gap: '10px', padding: '16px 24px', borderTop: '1px solid #F1F5F9' }}>
           <button
             type="button"
             onClick={onClose}
-            style={{ flex: 1, padding: '12px', borderRadius: '12px', background: '#F1F5F9', border: 'none', font: '700 13.5px sans-serif', color: '#334155', cursor: 'pointer' }}
+            style={{ flex: 1, padding: '13px', borderRadius: '10px', background: '#F1F5F9', border: 'none', font: '700 15px sans-serif', color: '#334155', cursor: 'pointer' }}
           >
             Hủy
           </button>
@@ -152,7 +152,7 @@ export function TaskAddEditModal({
             type="button"
             onClick={handleSave}
             disabled={isSaving}
-            style={{ flex: 1, padding: '12px', borderRadius: '12px', background: isSaving ? '#94A3B8' : '#2563EB', border: 'none', font: '700 13.5px sans-serif', color: '#fff', cursor: isSaving ? 'not-allowed' : 'pointer' }}
+            style={{ flex: 1, padding: '13px', borderRadius: '10px', background: isSaving ? '#94A3B8' : '#2563EB', border: 'none', font: '700 15px sans-serif', color: '#fff', cursor: isSaving ? 'not-allowed' : 'pointer' }}
           >
             {isSaving ? 'Đang lưu...' : 'Lưu công việc'}
           </button>

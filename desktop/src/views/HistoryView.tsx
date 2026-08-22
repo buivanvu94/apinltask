@@ -73,10 +73,10 @@ export function HistoryView({ now, onToggleTask, onSelectTask }: HistoryViewProp
 
   return (
     <div className="view-container" style={{ flex: 1, overflowY: 'auto', padding: '36px 40px' }}>
-      <div style={{ font: "700 26px/1.25 'Space Grotesk',sans-serif", color: '#0F172A', marginBottom: '4px' }}>
+      <div style={{ font: "700 28px/1.25 'Space Grotesk',sans-serif", color: '#0F172A', marginBottom: '4px' }}>
         Lịch sử
       </div>
-      <div style={{ font: '500 13.5px sans-serif', color: '#64748B', marginBottom: '20px' }}>
+      <div style={{ font: '500 14.5px sans-serif', color: '#64748B', marginBottom: '22px' }}>
         Tổng {totalCount} công việc đã hoàn thành
       </div>
 
@@ -85,17 +85,17 @@ export function HistoryView({ now, onToggleTask, onSelectTask }: HistoryViewProp
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
+          gap: '10px',
           background: '#fff',
-          borderRadius: '12px',
-          padding: '11px 14px',
-          maxWidth: '380px',
-          marginBottom: '22px',
+          borderRadius: '10px',
+          padding: '12px 16px',
+          maxWidth: '400px',
+          marginBottom: '24px',
           boxShadow: '0 1px 2px rgba(15,23,42,.04),0 10px 20px -16px rgba(15,23,42,.2)',
           border: '1px solid rgba(226, 232, 240, 0.8)',
         }}
       >
-        <svg viewBox="0 0 24 24" width="16" height="16">
+        <svg viewBox="0 0 24 24" width="18" height="18">
           <circle cx="11" cy="11" r="7" stroke="#94A3B8" strokeWidth="2" fill="none" />
           <path d="M21 21l-4.3-4.3" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round" />
         </svg>
@@ -103,7 +103,7 @@ export function HistoryView({ now, onToggleTask, onSelectTask }: HistoryViewProp
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Tìm trong lịch sử..."
-          style={{ border: 'none', background: 'transparent', outline: 'none', font: '500 13.5px sans-serif', color: '#0F172A', flex: 1 }}
+          style={{ border: 'none', background: 'transparent', outline: 'none', font: '500 15px sans-serif', color: '#0F172A', flex: 1 }}
         />
       </div>
 
@@ -113,8 +113,8 @@ export function HistoryView({ now, onToggleTask, onSelectTask }: HistoryViewProp
       ) : groups.length > 0 ? (
         <div>
           {groups.map((group) => (
-            <div key={group.label} style={{ marginBottom: '20px' }}>
-              <div style={{ font: '700 13px sans-serif', color: '#94A3B8', margin: '14px 0 8px' }}>
+            <div key={group.label} style={{ marginBottom: '22px' }}>
+              <div style={{ font: '700 14px sans-serif', color: '#94A3B8', margin: '16px 0 10px' }}>
                 {group.label}
               </div>
               {group.items.map((item) => (
@@ -129,7 +129,7 @@ export function HistoryView({ now, onToggleTask, onSelectTask }: HistoryViewProp
           ))}
         </div>
       ) : (
-        <div style={{ padding: '30px 4px', font: '500 13.5px sans-serif', color: '#94A3B8' }}>
+        <div style={{ padding: '30px 4px', font: '500 14.5px sans-serif', color: '#94A3B8' }}>
           Chưa có lịch sử phù hợp.
         </div>
       )}

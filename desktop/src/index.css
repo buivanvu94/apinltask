@@ -121,6 +121,14 @@ a:hover {
     background-position: 200% 0;
   }
 }
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 .view-container {
   animation: fadeInSlide 0.24s var(--ease-out-expo) forwards;

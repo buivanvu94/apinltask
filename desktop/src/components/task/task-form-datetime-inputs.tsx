@@ -32,19 +32,19 @@ export function TaskFormDatetimeInputs({
             flex: 1,
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
-            padding: '12px 14px',
-            borderRadius: '14px',
+            gap: '10px',
+            padding: '13px 16px',
+            borderRadius: '10px',
             background: '#F8FAFC',
             border: `1px solid ${attemptedSave && !date ? '#FCA5A5' : '#E2E8F0'}`,
             cursor: 'pointer',
           }}
         >
-          <svg viewBox="0 0 24 24" width="17" height="17">
+          <svg viewBox="0 0 24 24" width="18" height="18">
             <rect x="4" y="5" width="16" height="15" rx="3" stroke="#2563EB" strokeWidth="2" fill="none" />
             <path d="M4 10h16M8 3v4M16 3v4" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
           </svg>
-          <span style={{ font: '600 13.5px sans-serif', color: '#0F172A' }}>
+          <span style={{ font: '600 15px sans-serif', color: '#0F172A' }}>
             {date ? fmtDateShort(date) : 'Chọn ngày'}
           </span>
         </button>
@@ -56,26 +56,26 @@ export function TaskFormDatetimeInputs({
             flex: 1,
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
-            padding: '12px 14px',
-            borderRadius: '14px',
+            gap: '10px',
+            padding: '13px 16px',
+            borderRadius: '10px',
             background: '#F8FAFC',
             border: `1px solid ${attemptedSave && !time.set ? '#FCA5A5' : '#E2E8F0'}`,
             cursor: 'pointer',
           }}
         >
-          <svg viewBox="0 0 24 24" width="17" height="17">
+          <svg viewBox="0 0 24 24" width="18" height="18">
             <circle cx="12" cy="12" r="8.5" stroke="#2563EB" strokeWidth="2" fill="none" />
             <path d="M12 8v4l3 2" stroke="#2563EB" strokeWidth="2" fill="none" strokeLinecap="round" />
           </svg>
-          <span style={{ font: '600 13.5px sans-serif', color: '#0F172A' }}>
+          <span style={{ font: '600 15px sans-serif', color: '#0F172A' }}>
             {time.set ? `${pad2(time.h)}:${pad2(time.m)}` : 'Chọn giờ'}
           </span>
         </button>
       </div>
 
       {attemptedSave && (!date || !time.set) && (
-        <div style={{ font: '600 12px sans-serif', color: '#DC2626', margin: '0 0 12px' }}>
+        <div style={{ font: '600 13px sans-serif', color: '#DC2626', margin: '0 0 12px' }}>
           Chọn ngày và giờ để đặt nhắc nhở
         </div>
       )}
@@ -84,19 +84,19 @@ export function TaskFormDatetimeInputs({
       <div
         style={{
           background: '#EFF4FF',
-          borderRadius: '12px',
-          padding: '10px 14px',
+          borderRadius: '10px',
+          padding: '12px 16px',
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
+          gap: '10px',
           margin: '12px 0 18px',
         }}
       >
-        <svg viewBox="0 0 24 24" width="15" height="15">
+        <svg viewBox="0 0 24 24" width="16" height="16">
           <path d="M12 6v6l4 2" stroke="#2563EB" strokeWidth="2" fill="none" strokeLinecap="round" />
           <circle cx="12" cy="12" r="9" stroke="#2563EB" strokeWidth="2" fill="none" />
         </svg>
-        <div style={{ font: '600 12.5px sans-serif', color: '#2563EB', flex: 1 }}>{reminderText}</div>
+        <div style={{ font: '600 14px sans-serif', color: '#2563EB', flex: 1 }}>{reminderText}</div>
       </div>
 
       <button
@@ -105,11 +105,11 @@ export function TaskFormDatetimeInputs({
         style={{
           width: '100%',
           marginTop: '16px',
-          padding: '12px',
-          borderRadius: '14px',
+          padding: '13px',
+          borderRadius: '10px',
           background: '#fff',
           border: '1px solid #E2E8F0',
-          font: '700 13.5px sans-serif',
+          font: '700 14.5px sans-serif',
           color: '#2563EB',
           cursor: 'pointer',
         }}

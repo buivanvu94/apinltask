@@ -28,14 +28,14 @@ export function TaskFormTextFields({
           border: 'none',
           borderBottom: `2px solid ${attemptedSave && !title.trim() ? '#DC2626' : '#E2E8F0'}`,
           padding: '8px 2px 12px',
-          font: "700 20px 'Space Grotesk',sans-serif",
+          font: "700 22px 'Space Grotesk',sans-serif",
           color: '#0F172A',
           outline: 'none',
           marginBottom: '6px',
         }}
       />
       {attemptedSave && !title.trim() && (
-        <div style={{ font: '600 12px sans-serif', color: '#DC2626', margin: '-6px 0 12px' }}>
+        <div style={{ font: '600 13px sans-serif', color: '#DC2626', margin: '-4px 0 12px' }}>
           Vui lòng nhập tên công việc
         </div>
       )}
@@ -46,11 +46,11 @@ export function TaskFormTextFields({
         placeholder="Thêm mô tả (không bắt buộc)"
         style={{
           width: '100%',
-          minHeight: '64px',
+          minHeight: '68px',
           border: '1px solid #E2E8F0',
-          borderRadius: '14px',
+          borderRadius: '10px',
           padding: '12px 14px',
-          font: '500 14px sans-serif',
+          font: '500 15px sans-serif',
           color: '#0F172A',
           outline: 'none',
           resize: 'none',
@@ -62,15 +62,15 @@ export function TaskFormTextFields({
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
+          gap: '10px',
           padding: '12px 14px',
-          borderRadius: '14px',
+          borderRadius: '10px',
           background: '#F8FAFC',
           border: '1px solid #E2E8F0',
-          marginTop: '18px',
+          marginTop: '16px',
         }}
       >
-        <svg viewBox="0 0 24 24" width="17" height="17">
+        <svg viewBox="0 0 24 24" width="18" height="18">
           <path
             d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"
             stroke="#94A3B8"
@@ -87,7 +87,7 @@ export function TaskFormTextFields({
             border: 'none',
             background: 'transparent',
             outline: 'none',
-            font: '500 14px sans-serif',
+            font: '500 15px sans-serif',
             color: '#0F172A',
             flex: 1,
           }}

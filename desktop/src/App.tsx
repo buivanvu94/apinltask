@@ -18,7 +18,7 @@ import { Task } from './types/task';
 import { parseDate } from './utils/date-format-utils';
 
 function MainApp() {
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
   const { tasks, now, isLoading: tasksLoading, toggleTask, deleteTask, createTask, updateTask } = useTasks();
   const { settings, toggleSetting, setRemindBefore, setSnooze, setQuietHours } = useSettings();
 

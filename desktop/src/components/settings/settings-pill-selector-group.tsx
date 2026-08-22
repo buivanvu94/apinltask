@@ -17,9 +17,9 @@ export function SettingsPillSelectorGroup<T extends number>({
     <>
       <div
         style={{
-          font: '700 12.5px sans-serif',
+          font: '700 13.5px sans-serif',
           color: '#94A3B8',
-          margin: '20px 0 8px',
+          margin: '24px 0 10px',
           textTransform: 'uppercase',
           letterSpacing: '.04em',
         }}
@@ -34,9 +34,9 @@ export function SettingsPillSelectorGroup<T extends number>({
               key={opt}
               onClick={() => onSelect(opt)}
               style={{
-                padding: '9px 14px',
+                padding: '9px 16px',
                 borderRadius: '10px',
-                font: '600 13px sans-serif',
+                font: '600 14px sans-serif',
                 border: `1px solid ${active ? '#2563EB' : '#E2E8F0'}`,
                 background: active ? '#2563EB' : '#fff',
                 color: active ? '#fff' : '#334155',

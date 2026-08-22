@@ -44,31 +44,30 @@ export function UserResetPasswordModal({
           position: 'absolute',
           left: '50%',
           top: '50%',
-          transform: 'translate(-50%,-50%)',
-          width: '380px',
+          width: '400px',
           background: '#fff',
-          borderRadius: '20px',
-          padding: '22px 24px',
+          borderRadius: '10px',
+          padding: '24px 26px',
           animation: 'modalPop .18s ease-out',
           boxShadow: '0 25px 50px -12px rgba(15,23,42,.3)',
         }}
       >
-        <div style={{ font: "700 16px 'Space Grotesk', sans-serif", color: '#0F172A', marginBottom: '6px' }}>
+        <div style={{ font: "700 18px 'Space Grotesk', sans-serif", color: '#0F172A', marginBottom: '8px' }}>
           Đặt lại mật khẩu
         </div>
-        <div style={{ font: '500 13px sans-serif', color: '#64748B', marginBottom: '16px' }}>
+        <div style={{ font: '500 14px sans-serif', color: '#64748B', marginBottom: '18px', lineHeight: 1.4 }}>
           Đặt mật khẩu mới cho tài khoản <strong>{user.email}</strong>.
         </div>
 
         {errorMsg && (
-          <div style={{ background: '#FEE2E2', border: '1px solid #FECACA', borderRadius: '8px', padding: '8px 12px', marginBottom: '12px', color: '#DC2626', fontSize: '12.5px', fontWeight: 500 }}>
+          <div style={{ background: '#FEE2E2', border: '1px solid #FECACA', borderRadius: '10px', padding: '10px 14px', marginBottom: '14px', color: '#DC2626', fontSize: '13.5px', fontWeight: 500 }}>
             {errorMsg}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 600, color: '#334155', marginBottom: '5px' }}>
+            <label style={{ display: 'block', fontSize: '13.5px', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>
               Mật khẩu mới (≥ 8 ký tự)
             </label>
             <input
@@ -77,22 +76,22 @@ export function UserResetPasswordModal({
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="••••••••"
               required
-              style={{ width: '100%', padding: '10px 12px', borderRadius: '10px', border: '1px solid #CBD5E1', fontSize: '13.5px', outline: 'none', background: '#F8FAFC' }}
+              style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', border: '1px solid #CBD5E1', fontSize: '15px', outline: 'none', background: '#F8FAFC' }}
             />
           </div>
 
-          <div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
+          <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
             <button
               type="button"
               onClick={onClose}
-              style={{ flex: 1, padding: '10px', borderRadius: '10px', background: '#F1F5F9', border: 'none', font: '700 13px sans-serif', color: '#334155', cursor: 'pointer' }}
+              style={{ flex: 1, padding: '12px', borderRadius: '10px', background: '#F1F5F9', border: 'none', font: '700 14.5px sans-serif', color: '#334155', cursor: 'pointer' }}
             >
               Hủy
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              style={{ flex: 1, padding: '10px', borderRadius: '10px', background: isSubmitting ? '#94A3B8' : '#D97706', border: 'none', font: '700 13px sans-serif', color: '#fff', cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+              style={{ flex: 1, padding: '12px', borderRadius: '10px', background: isSubmitting ? '#94A3B8' : '#D97706', border: 'none', font: '700 14.5px sans-serif', color: '#fff', cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
             >
               {isSubmitting ? 'Đang lưu...' : 'Xác nhận'}
             </button>

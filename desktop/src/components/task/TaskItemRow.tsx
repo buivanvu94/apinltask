@@ -41,11 +41,11 @@ export function TaskItemRow({ task, now, variant, onSelect, onToggle }: TaskItem
       style={{
         background: '#fff',
         border: isOverdueVariant ? '1px solid #FECACA' : '1px solid rgba(15,23,42,.04)',
-        borderRadius: '14px',
-        padding: '13px 16px',
+        borderRadius: '10px',
+        padding: '14px 18px',
         marginBottom: '8px',
         display: 'flex',
-        gap: '12px',
+        gap: '14px',
         alignItems: 'center',
         boxShadow: isOverdueVariant
           ? '0 6px 16px -14px rgba(220,38,38,.25)'
@@ -57,8 +57,8 @@ export function TaskItemRow({ task, now, variant, onSelect, onToggle }: TaskItem
       <button
         onClick={handleToggle}
         style={{
-          width: '22px',
-          height: '22px',
+          width: '24px',
+          height: '24px',
           borderRadius: '50%',
           flex: 'none',
           display: 'flex',
@@ -71,19 +71,19 @@ export function TaskItemRow({ task, now, variant, onSelect, onToggle }: TaskItem
         }}
       >
         {task.completed && (
-          <svg viewBox="0 0 24 24" width="12" height="12">
+          <svg viewBox="0 0 24 24" width="13" height="13">
             <path d="M5 13l4 4L19 7" stroke="#fff" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         )}
       </button>
 
-      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: cat.color, flex: 'none' }} />
+      <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: cat.color, flex: 'none' }} />
 
       <div
         style={{
           flex: 1,
           minWidth: 0,
-          font: '600 14.5px sans-serif',
+          font: '600 15.5px sans-serif',
           color: task.completed ? '#94A3B8' : '#0F172A',
           textDecoration: task.completed ? 'line-through' : 'none',
           whiteSpace: 'nowrap',
@@ -95,21 +95,21 @@ export function TaskItemRow({ task, now, variant, onSelect, onToggle }: TaskItem
       </div>
 
       {isUpcomingVariant && (
-        <span style={{ font: '600 11.5px sans-serif', color: '#94A3B8', flex: 'none' }}>
+        <span style={{ font: '600 12.5px sans-serif', color: '#94A3B8', flex: 'none' }}>
           {fmtDateShort(due)}
         </span>
       )}
 
-      <span style={{ font: '500 12.5px sans-serif', color: '#64748B', flex: 'none' }}>
+      <span style={{ font: '500 13.5px sans-serif', color: '#64748B', flex: 'none' }}>
         {fmtTime(due)}
       </span>
 
       <span
         style={{
-          font: '600 11px sans-serif',
+          font: '700 12px sans-serif',
           color: pr.color,
           background: pr.bg,
-          padding: '3px 9px',
+          padding: '3px 10px',
           borderRadius: '6px',
           flex: 'none',
         }}
@@ -120,10 +120,10 @@ export function TaskItemRow({ task, now, variant, onSelect, onToggle }: TaskItem
       {!isUpcomingVariant && relativeText && (
         <span
           style={{
-            font: '600 12px sans-serif',
+            font: '600 13px sans-serif',
             color: relativeColor,
             flex: 'none',
-            width: '120px',
+            width: '125px',
             textAlign: 'right',
           }}
         >

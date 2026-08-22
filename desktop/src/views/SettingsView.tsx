@@ -24,7 +24,7 @@ export function SettingsView({
   onSetSnooze,
   onSetQuietHours,
 }: SettingsViewProps) {
-
+  const [timePickerTarget, setTimePickerTarget] = useState<'quietStart' | 'quietEnd' | null>(null);
   const remindOptions: RemindBeforeMinutes[] = [0, 5, 15, 30];
   const snoozeOptions: SnoozeMinutes[] = [5, 10, 15, 20];
 

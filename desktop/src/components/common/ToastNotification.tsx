@@ -29,12 +29,12 @@ export function ToastNotification({ toast, onClose, duration = 3200 }: ToastNoti
         position: 'fixed',
         top: '20px',
         right: '20px',
-        width: '340px',
+        width: '360px',
         background: 'rgba(250,250,252,.98)',
-        borderRadius: '16px',
-        padding: '12px 14px',
+        borderRadius: '10px',
+        padding: '14px 16px',
         display: 'flex',
-        gap: '10px',
+        gap: '12px',
         alignItems: 'flex-start',
         boxShadow: '0 16px 32px -12px rgba(15,23,42,.3)',
         zIndex: 70,
@@ -45,9 +45,9 @@ export function ToastNotification({ toast, onClose, duration = 3200 }: ToastNoti
     >
       <div
         style={{
-          width: '34px',
-          height: '34px',
-          borderRadius: '9px',
+          width: '36px',
+          height: '36px',
+          borderRadius: '8px',
           background: '#2563EB',
           display: 'flex',
           alignItems: 'center',
@@ -55,7 +55,7 @@ export function ToastNotification({ toast, onClose, duration = 3200 }: ToastNoti
           flex: 'none',
         }}
       >
-        <svg viewBox="0 0 24 24" width="17" height="17">
+        <svg viewBox="0 0 24 24" width="18" height="18">
           <path
             d="M12 21a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2zM18 9a6 6 0 1 0-12 0c0 3.2-1 4.5-2 5.5h16c-1-1-2-2.3-2-5.5z"
             stroke="#fff"
@@ -67,11 +67,11 @@ export function ToastNotification({ toast, onClose, duration = 3200 }: ToastNoti
       </div>
       <div style={{ flex: 1 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span style={{ font: '700 12px sans-serif', color: '#0F172A' }}>NLTASK</span>
-          <span style={{ font: '500 11px sans-serif', color: '#94A3B8' }}>bây giờ</span>
+          <span style={{ font: '700 13px sans-serif', color: '#0F172A' }}>NLTASK</span>
+          <span style={{ font: '500 12px sans-serif', color: '#94A3B8' }}>bây giờ</span>
         </div>
-        <div style={{ font: '600 13.5px sans-serif', color: '#0F172A', marginTop: '1px' }}>{toast.title}</div>
-        <div style={{ font: '500 12.5px sans-serif', color: '#64748B', marginTop: '1px' }}>
+        <div style={{ font: '600 15px sans-serif', color: '#0F172A', marginTop: '2px' }}>{toast.title}</div>
+        <div style={{ font: '500 13.5px sans-serif', color: '#64748B', marginTop: '2px' }}>
           Đến giờ: {toast.time}
         </div>
       </div>
