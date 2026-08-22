@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const authRoutes = require('./routes/auth-routes');
 const usersRoutes = require('./routes/users-routes');
 const tasksRoutes = require('./routes/tasks-routes');
@@ -10,6 +11,12 @@ const requireAdminMiddleware = require('./middleware/require-admin-middleware');
 const errorHandler = require('./middleware/error-handler');
 
 const app = express();
+
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 app.use(express.json());
 
