@@ -6,9 +6,6 @@ import {
 import { UserSettings } from '../types/settings';
 import { fmtTime, parseDate } from '../utils/date-format-utils';
 
-function isTauri(): boolean {
-  return typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
-}
 
 export function playNotificationSound(): void {
   try {
@@ -69,7 +66,8 @@ export async function sendDesktopNotification(
   }
 
   // Send Native Notification if push enabled
-  if (settings.push && isTauri()) {
+  if (settings.push) {
+    let sent = false;
     try {
       let granted = await isPermissionGranted();
       if (!granted) {
@@ -82,18 +80,45 @@ export async function sendDesktopNotification(
           title,
           body,
         });
+        sent = true;
       }
     } catch (err) {
-      console.warn('Native notification failed:', err);
+      console.warn('Tauri native notification attempt failed:', err);
+    }
+
+    if (!sent && typeof window !== 'undefined' && 'Notification' in window) {
+      try {
+        if (Notification.permission === 'granted') {
+          new Notification(title, { body });
+        } else if (Notification.permission !== 'denied') {
+          const perm = await Notification.requestPermission();
+          if (perm === 'granted') {
+            new Notification(title, { body });
+          }
+        }
+      } catch (err) {
+        console.warn('Web notification fallback failed:', err);
+      }
     }
   }
 }
 
-export async function notifyTaskDue(taskTitle: string, dueAt: string | Date, settings: UserSettings): Promise<void> {
+export async function notifyTaskDue(
+  taskTitle: string,
+  dueAt: string | Date,
+  settings: UserSettings,
+  type: 'due' | 'pre' = 'due',
+  remindMinutes?: number
+): Promise<void> {
   const timeLabel = fmtTime(parseDate(dueAt));
-  await sendDesktopNotification(
-    'NLTASK - Nhắc nhở công việc',
-    `${taskTitle} (Đến giờ: ${timeLabel})`,
-    settings
-  );
+  const title =
+    type === 'pre'
+      ? `NLTASK - Sắp đến hạn (${remindMinutes || 15} phút nữa)`
+      : 'NLTASK - Đến giờ làm việc!';
+  const body =
+    type === 'pre'
+      ? `${taskTitle} (Hạn: ${timeLabel})`
+      : `${taskTitle} (Đến giờ: ${timeLabel})`;
+
+  await sendDesktopNotification(title, body, settings);
 }

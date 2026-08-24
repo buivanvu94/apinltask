@@ -15,7 +15,7 @@ import { useTasks } from './hooks/useTasks';
 import { useSettings } from './hooks/useSettings';
 import { notifyTaskDue } from './services/notification-service';
 import { Task } from './types/task';
-import { parseDate } from './utils/date-format-utils';
+import { parseDate, fmtTime } from './utils/date-format-utils';
 
 function MainApp() {
   const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
@@ -31,25 +31,47 @@ function MainApp() {
 
   const notifiedRef = useRef<Set<string>>(new Set());
 
-  // Task reminder scheduler
+  // Task reminder scheduler (pre-reminder and exact on-time reminder)
   useEffect(() => {
     if (!settings.push && !settings.sound) return;
 
     const curTimeMs = now.getTime();
-    const remindOffsetMs = (settings.remindBefore || 0) * 60 * 1000;
+    const remindBefore = settings.remindBefore || 0;
+    const remindOffsetMs = remindBefore * 60 * 1000;
+    const maxCatchupWindowMs = 5 * 60 * 1000; // 5 mins catchup window
 
     tasks.forEach((t) => {
       if (t.completed) return;
       const dueMs = parseDate(t.dueAt).getTime();
-      const triggerTimeMs = dueMs - remindOffsetMs;
-      const diff = curTimeMs - triggerTimeMs;
 
-      // 45s trigger window
-      if (diff >= 0 && diff < 45000) {
-        const notifKey = `${t.id}_${t.dueAt}_${settings.remindBefore}`;
-        if (!notifiedRef.current.has(notifKey)) {
-          notifiedRef.current.add(notifKey);
-          notifyTaskDue(t.title, t.dueAt, settings);
+      // 1. Nhắc trước khi tới giờ (nếu bật nhắc trước > 0 phút)
+      if (remindBefore > 0) {
+        const preTriggerMs = dueMs - remindOffsetMs;
+        const preDiff = curTimeMs - preTriggerMs;
+        if (preDiff >= 0 && preDiff < maxCatchupWindowMs && curTimeMs < dueMs) {
+          const preKey = `${t.id}_pre_${remindBefore}_${t.dueAt}`;
+          if (!notifiedRef.current.has(preKey)) {
+            notifiedRef.current.add(preKey);
+            notifyTaskDue(t.title, t.dueAt, settings, 'pre', remindBefore);
+            setToast({
+              title: `🔔 Sắp đến hạn (${remindBefore}p): ${t.title}`,
+              time: fmtTime(parseDate(t.dueAt)),
+            });
+          }
+        }
+      }
+
+      // 2. Nhắc ĐÚNG GIỜ ĐẾN HẠN (Khi tới giờ làm việc)
+      const dueDiff = curTimeMs - dueMs;
+      if (dueDiff >= 0 && dueDiff < maxCatchupWindowMs) {
+        const dueKey = `${t.id}_due_${t.dueAt}`;
+        if (!notifiedRef.current.has(dueKey)) {
+          notifiedRef.current.add(dueKey);
+          notifyTaskDue(t.title, t.dueAt, settings, 'due');
+          setToast({
+            title: `⏰ Đến giờ làm việc: ${t.title}`,
+            time: fmtTime(parseDate(t.dueAt)),
+          });
         }
       }
     });
@@ -128,6 +150,7 @@ function MainApp() {
             onSetRemindBefore={setRemindBefore}
             onSetSnooze={setSnooze}
             onSetQuietHours={setQuietHours}
+            onShowToast={(msg) => setToast({ title: msg, time: 'Vừa xong' })}
           />
         )}
 

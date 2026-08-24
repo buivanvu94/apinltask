@@ -4,6 +4,7 @@ import { User } from '../types/auth';
 import { TimePickerModal } from '../components/pickers/TimePickerModal';
 import { SettingsSwitchItem } from '../components/settings/settings-switch-item';
 import { SettingsPillSelectorGroup } from '../components/settings/settings-pill-selector-group';
+import { sendDesktopNotification } from '../services/notification-service';
 
 interface SettingsViewProps {
   settings: UserSettings;
@@ -13,6 +14,7 @@ interface SettingsViewProps {
   onSetRemindBefore: (val: RemindBeforeMinutes) => void;
   onSetSnooze: (val: SnoozeMinutes) => void;
   onSetQuietHours: (start: string, end: string) => void;
+  onShowToast?: (message: string) => void;
 }
 
 export function SettingsView({
@@ -23,7 +25,9 @@ export function SettingsView({
   onSetRemindBefore,
   onSetSnooze,
   onSetQuietHours,
+  onShowToast,
 }: SettingsViewProps) {
+  const [isTesting, setIsTesting] = useState(false);
   const [timePickerTarget, setTimePickerTarget] = useState<'quietStart' | 'quietEnd' | null>(null);
   const remindOptions: RemindBeforeMinutes[] = [0, 5, 15, 30];
   const snoozeOptions: SnoozeMinutes[] = [5, 10, 15, 20];
@@ -66,6 +70,43 @@ export function SettingsView({
           />
         </div>
 
+        <div style={{ marginTop: '10px', marginBottom: '20px' }}>
+          <button
+            type="button"
+            disabled={isTesting}
+            onClick={async () => {
+              setIsTesting(true);
+              try {
+                await sendDesktopNotification(
+                  'NLTASK - Thông báo thử nghiệm',
+                  'Hệ thống thông báo đẩy trên PC đang hoạt động rất tốt!',
+                  { ...settings, push: true, sound: true, quietStart: '00:00', quietEnd: '00:00' }
+                );
+                onShowToast?.('Đã phát thông báo thử nghiệm! Kiểm tra góc dưới màn hình.');
+              } catch (err) {
+                console.error('Test notification failed:', err);
+              } finally {
+                setTimeout(() => setIsTesting(false), 1000);
+              }
+            }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '9px 16px',
+              background: '#EFF6FF',
+              color: '#2563EB',
+              border: '1px solid #BFDBFE',
+              borderRadius: '8px',
+              font: "600 13.5px 'Space Grotesk', sans-serif",
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <span>🔔</span>
+            <span>{isTesting ? 'Đang gửi...' : 'Kiểm tra gửi thông báo đẩy trên PC'}</span>
+          </button>
+        </div>
         {/* Section 2: Nhắc trước khi tới giờ */}
         <SettingsPillSelectorGroup<RemindBeforeMinutes>
           title="Nhắc trước khi tới giờ"

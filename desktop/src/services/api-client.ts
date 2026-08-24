@@ -2,7 +2,8 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { getAccessToken, setAccessToken, getRefreshToken, setRefreshToken, clearAllTokens } from './token-storage';
 import { RefreshResponse } from '../types/auth';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api';
+const RAW_URL = import.meta.env.VITE_API_BASE_URL || 'https://apinltask.nguyenluan.vn';
+const BASE_URL = RAW_URL.endsWith('/api') ? RAW_URL : `${RAW_URL.replace(/\/+$/, '')}/api`;
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,

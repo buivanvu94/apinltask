@@ -34,7 +34,7 @@ export function useTasks() {
     fetchTasksAndSummary();
     const interval = setInterval(() => {
       setNow(new Date());
-    }, 30000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [fetchTasksAndSummary]);

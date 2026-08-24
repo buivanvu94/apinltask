@@ -26,7 +26,7 @@ export function AuthView() {
         if (err.response?.status === 401) {
           setErrorMsg('Email hoặc mật khẩu không chính xác.');
         } else if (err.code === 'ERR_NETWORK') {
-          setErrorMsg('Không thể kết nối đến máy chủ backend (Port 4000).');
+          setErrorMsg('Không thể kết nối đến máy chủ backend.');
         } else {
           const apiErr = err.response?.data?.error;
           setErrorMsg(typeof apiErr === 'string' ? apiErr : 'Đăng nhập thất bại. Vui lòng thử lại.');
