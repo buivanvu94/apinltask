@@ -2,7 +2,7 @@ const prisma = require('../lib/prisma-client');
 const { hashPassword } = require('../utils/password-utils');
 const { revokeAllUserTokens } = require('./auth-service');
 
-const USER_LIST_SELECT = { id: true, email: true, name: true, role: true, createdAt: true };
+const USER_LIST_SELECT = { id: true, email: true, name: true, role: true, deviceToken: true, createdAt: true };
 
 // Uses raw SQL with FOR UPDATE to lock the admin rows for the duration of the
 // transaction, so two concurrent demote/delete requests can't both read the
@@ -41,7 +41,7 @@ async function createUser({ email, name, password, role }) {
   return user;
 }
 
-async function updateUser(id, { name, role }) {
+async function updateUser(id, { name, role, deviceToken }) {
   return prisma.$transaction(async (tx) => {
     if (role === 'USER') {
       await assertNotLastAdmin(tx, id);
@@ -49,7 +49,11 @@ async function updateUser(id, { name, role }) {
 
     return tx.user.update({
       where: { id },
-      data: { ...(name !== undefined && { name }), ...(role !== undefined && { role }) },
+      data: {
+        ...(name !== undefined && { name }),
+        ...(role !== undefined && { role }),
+        ...(deviceToken !== undefined && { deviceToken }),
+      },
       select: USER_LIST_SELECT,
     });
   });
