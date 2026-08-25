@@ -18,7 +18,7 @@ async function collectReminderEntries(now) {
     where: {
       completed: false,
       remindedAt: null,
-      dueAt: { lte: horizon },
+      dueAt: { gte: now, lte: horizon },
       user: { deviceToken: { not: null } },
     },
     include: { user: { include: { settings: true } } },
