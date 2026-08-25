@@ -3,6 +3,7 @@ export interface User {
   email: string;
   name: string;
   role: 'ADMIN' | 'USER';
+  deviceToken?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }

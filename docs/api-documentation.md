@@ -149,7 +149,37 @@ Lấy thông tin tài khoản đang đăng nhập từ Access Token.
     "id": "cuid...",
     "email": "user@example.com",
     "name": "Nguyen Van A",
-    "role": "USER"
+    "role": "USER",
+    "deviceToken": null
+  }
+  ```
+- **Response 401 Unauthorized:** Token hết hạn hoặc không hợp lệ.
+
+---
+
+### `PATCH /api/auth/me` 🔒
+Tự cập nhật `deviceToken` (push notification) của chính tài khoản đang đăng nhập. Không cần quyền ADMIN.
+
+- **Auth:** `Bearer <accessToken>`
+- **Body:**
+  | Field | Type | Required | Description |
+  |---|---|---|---|
+  | `deviceToken` | string \| null | ❌ | Token thiết bị để nhận push notification. Gửi `null` để xóa. |
+- **Request Example:**
+  ```json
+  {
+    "deviceToken": "fcm-device-token-xyz"
+  }
+  ```
+- **Response 200 OK:**
+  ```json
+  {
+    "id": "cuid...",
+    "email": "user@example.com",
+    "name": "Nguyen Van A",
+    "role": "USER",
+    "deviceToken": "fcm-device-token-xyz",
+    "createdAt": "2026-08-22T01:00:00.000Z"
   }
   ```
 - **Response 401 Unauthorized:** Token hết hạn hoặc không hợp lệ.

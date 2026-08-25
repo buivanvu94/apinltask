@@ -1,5 +1,6 @@
 const { z } = require('zod');
 const authService = require('../services/auth-service');
+const usersService = require('../services/users-service');
 const prisma = require('../lib/prisma-client');
 
 const loginSchema = z.object({
@@ -9,6 +10,10 @@ const loginSchema = z.object({
 
 const refreshSchema = z.object({
   refreshToken: z.string().min(1),
+});
+
+const updateMeSchema = z.object({
+  deviceToken: z.string().optional().nullable(),
 });
 
 async function login(req, res, next) {
@@ -45,7 +50,7 @@ async function me(req, res, next) {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.user.id },
-      select: { id: true, email: true, name: true, role: true },
+      select: { id: true, email: true, name: true, role: true, deviceToken: true },
     });
     if (!user) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -56,4 +61,13 @@ async function me(req, res, next) {
   }
 }
 
-module.exports = { login, refresh, logout, me };
+async function updateMe(req, res, next) {
+  try {
+    const { deviceToken } = updateMeSchema.parse(req.body);
+    res.json(await usersService.updateUser(req.user.id, { deviceToken }));
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { login, refresh, logout, me, updateMe };

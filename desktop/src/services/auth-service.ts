@@ -32,3 +32,8 @@ export async function getMe(): Promise<User> {
   const response = await apiClient.get<User>('/auth/me');
   return response.data;
 }
+
+export async function updateMyDeviceToken(deviceToken: string | null): Promise<User> {
+  const response = await apiClient.patch<User>('/auth/me', { deviceToken });
+  return response.data;
+}

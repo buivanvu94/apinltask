@@ -63,6 +63,7 @@ Xoá `User` cascade xoá `Task`/`Settings`/`RefreshToken` liên quan (`onDelete:
 | Auth | `POST /api/auth/refresh` | Public (cần refresh token hợp lệ) |
 | Auth | `POST /api/auth/logout` | Public (cần refresh token hợp lệ) |
 | Auth | `GET /api/auth/me` | Authenticated |
+| Auth | `PATCH /api/auth/me` | Authenticated (chỉ tự sửa `deviceToken` của chính mình) |
 | Users | `GET /api/users` | Admin |
 | Users | `POST /api/users` | Admin |
 | Users | `PATCH /api/users/:id` | Admin |
