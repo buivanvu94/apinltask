@@ -121,9 +121,9 @@ async function checkReceipts(receiptEntries) {
   for (const chunk of chunks) {
     let receipts;
     try {
-      receipts = await expo.getReceiptsAsync(chunk);
+      receipts = await expo.getPushNotificationReceiptsAsync(chunk);
     } catch (err) {
-      console.error('[push] getReceiptsAsync failed:', err);
+      console.error('[push] getPushNotificationReceiptsAsync failed:', err);
       continue;
     }
 
