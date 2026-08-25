@@ -77,14 +77,23 @@ export function SettingsView({
             onClick={async () => {
               setIsTesting(true);
               try {
-                await sendDesktopNotification(
+                const result = await sendDesktopNotification(
                   'NLTASK - Thông báo thử nghiệm',
                   'Hệ thống thông báo đẩy trên PC đang hoạt động rất tốt!',
                   { ...settings, push: true, sound: true, quietStart: '00:00', quietEnd: '00:00' }
                 );
-                onShowToast?.('Đã phát thông báo thử nghiệm! Kiểm tra góc dưới màn hình.');
+                if (result.delivered) {
+                  onShowToast?.('Đã gửi thông báo thành công! Kiểm tra góc dưới màn hình.');
+                } else if (result.reason === 'permission-denied') {
+                  onShowToast?.(
+                    'Windows đang chặn thông báo của NLTASK. Vào Settings > Hệ thống > Thông báo, bật cho NLTASK và tắt Focus Assist.'
+                  );
+                } else {
+                  onShowToast?.('Không thể gửi thông báo. Vui lòng kiểm tra lại cài đặt.');
+                }
               } catch (err) {
                 console.error('Test notification failed:', err);
+                onShowToast?.('Không thể gửi thông báo. Vui lòng kiểm tra lại cài đặt.');
               } finally {
                 setTimeout(() => setIsTesting(false), 1000);
               }

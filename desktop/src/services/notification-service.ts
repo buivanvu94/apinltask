@@ -48,16 +48,22 @@ export function isQuietHour(now: Date, startStr: string, endStr: string): boolea
   return curMinutes >= startMinutes || curMinutes < endMinutes;
 }
 
+export interface NotificationResult {
+  delivered: boolean;
+  method: 'native' | 'web' | 'none';
+  reason?: 'quiet-hours' | 'push-disabled' | 'permission-denied';
+}
+
 export async function sendDesktopNotification(
   title: string,
   body: string,
   settings: UserSettings
-): Promise<void> {
+): Promise<NotificationResult> {
   const now = new Date();
 
   // Check Quiet Hours
   if (isQuietHour(now, settings.quietStart, settings.quietEnd)) {
-    return;
+    return { delivered: false, method: 'none', reason: 'quiet-hours' };
   }
 
   // Play Sound if enabled
@@ -65,42 +71,49 @@ export async function sendDesktopNotification(
     playNotificationSound();
   }
 
-  // Send Native Notification if push enabled
-  if (settings.push) {
-    let sent = false;
-    try {
-      let granted = await isPermissionGranted();
-      if (!granted) {
-        const permission = await requestPermission();
-        granted = permission === 'granted';
-      }
+  if (!settings.push) {
+    return { delivered: false, method: 'none', reason: 'push-disabled' };
+  }
 
-      if (granted) {
-        tauriSendNotification({
-          title,
-          body,
-        });
-        sent = true;
+  // Send Native Notification
+  try {
+    let granted = await isPermissionGranted();
+    if (!granted) {
+      const permission = await requestPermission();
+      granted = permission === 'granted';
+    }
+
+    if (granted) {
+      tauriSendNotification({
+        title,
+        body,
+      });
+      return { delivered: true, method: 'native' };
+    }
+  } catch (err) {
+    console.warn('Tauri native notification attempt failed:', err);
+  }
+
+  // Fallback: Web Notification API
+  if (typeof window !== 'undefined' && 'Notification' in window) {
+    try {
+      if (Notification.permission === 'granted') {
+        new Notification(title, { body });
+        return { delivered: true, method: 'web' };
+      } else if (Notification.permission !== 'denied') {
+        const perm = await Notification.requestPermission();
+        if (perm === 'granted') {
+          new Notification(title, { body });
+          return { delivered: true, method: 'web' };
+        }
       }
     } catch (err) {
-      console.warn('Tauri native notification attempt failed:', err);
-    }
-
-    if (!sent && typeof window !== 'undefined' && 'Notification' in window) {
-      try {
-        if (Notification.permission === 'granted') {
-          new Notification(title, { body });
-        } else if (Notification.permission !== 'denied') {
-          const perm = await Notification.requestPermission();
-          if (perm === 'granted') {
-            new Notification(title, { body });
-          }
-        }
-      } catch (err) {
-        console.warn('Web notification fallback failed:', err);
-      }
+      console.warn('Web notification fallback failed:', err);
     }
   }
+
+  console.warn('Desktop notification blocked: OS/browser denied notification permission.');
+  return { delivered: false, method: 'none', reason: 'permission-denied' };
 }
 
 export async function notifyTaskDue(
