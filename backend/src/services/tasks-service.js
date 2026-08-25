@@ -1,6 +1,13 @@
 const prisma = require('../lib/prisma-client');
 const { toDbEnum, fromDbEnum } = require('../utils/enum-mapper');
 const { getTodayRange } = require('../utils/date-range-utils');
+const { notifyTaskUpdated } = require('./expo-push-service');
+
+const NOTIFY_ON_UPDATE_FIELDS = ['title', 'dueAt', 'category'];
+
+function shouldNotifyUpdate(data) {
+  return NOTIFY_ON_UPDATE_FIELDS.some((field) => data[field] !== undefined);
+}
 
 function serializeTask(task) {
   return {
@@ -93,7 +100,11 @@ async function updateTask(userId, id, data) {
     ...(data.priority !== undefined && { priority: toDbEnum('priority', data.priority) }),
     ...(data.repeat !== undefined && { repeat: toDbEnum('repeat', data.repeat) }),
     ...(data.location !== undefined && { location: data.location }),
-    ...(data.dueAt !== undefined && { dueAt: new Date(data.dueAt) }),
+    ...(data.dueAt !== undefined && {
+      dueAt: new Date(data.dueAt),
+      remindedAt: null,
+      lastOverdueNotifiedAt: null,
+    }),
   };
 
   const { count } = await prisma.task.updateMany({ where: { id, userId }, data: updateData });
@@ -102,7 +113,14 @@ async function updateTask(userId, id, data) {
     error.status = 404;
     throw error;
   }
-  return getTaskById(userId, id);
+
+  const task = await getTaskById(userId, id);
+  if (shouldNotifyUpdate(data)) {
+    notifyTaskUpdated(userId, task).catch((err) => {
+      console.error('[push] task_updated failed for task %s:', id, err);
+    });
+  }
+  return task;
 }
 
 async function toggleTask(userId, id) {

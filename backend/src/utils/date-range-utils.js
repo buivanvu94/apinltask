@@ -76,4 +76,4 @@ function formatDateKey(date, timeZone = appTimezone) {
   return `${year}-${pad(month)}-${pad(day)}`;
 }
 
-module.exports = { getTodayRange, getWeekRange, getWeekdayIndex, formatDateKey, addZonedDays };
+module.exports = { getTodayRange, getWeekRange, getWeekdayIndex, formatDateKey, addZonedDays, getZonedParts };
